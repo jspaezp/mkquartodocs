@@ -1,0 +1,150 @@
+
+name: CI Testing
+
+on:
+  push:
+    branches: [ main, devel, release ]
+  pull_request:
+    branches: [ main, devel, release ]
+  schedule:
+  - cron: "4 5 4 1/1 *" # Run monthly.
+
+jobs:
+  cheap_checks:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v3
+
+      # Python setup
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Debug Info
+        run: echo ${{ github.ref }} ${{ github.event_name }} ${{ endsWith(github.ref, 'heads/release') && (github.event_name == 'push') }}
+        # refs/heads/main push false is the output of the main branch when tagged with a release ...
+
+      - name: View Python --version
+        run: python --version
+
+      # Poetry Setup
+      - name: Python Poetry Action
+        uses: abatilo/actions-poetry@v2.1.6
+        with:
+          poetry-version: '1.2.0'
+
+      - name: View poetry --version
+        run: poetry --version
+      - name: Install Stuff
+        run: poetry install --no-root --only dev
+      - name: mdformat
+        run: poetry run mdformat --check *.md docs notebooks notebooks/*/*.qmd tests
+      - name: Black
+        run: poetry run python -m black . --check --diff
+      - name: flake8
+        run: poetry run flake8 mkquartodocs
+      - name: isort
+        run: poetry run isort . --check
+
+  ci:
+    needs: cheap_checks
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.x', '3.9']
+        poetry-version: ['1.2.0',]
+        os: ['ubuntu-latest', 'macos-latest']
+    runs-on: ${{ matrix.os }}
+    steps:
+      # Initial Setup
+      - uses: actions/checkout@v3
+
+      # Documentation setup
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+      - name: View Quarto version
+        run:
+          quarto --version
+
+      # Python setup
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: View Python --version
+        run: python --version
+
+      # Poetry Setup
+      - name: Python Poetry Action
+        uses: abatilo/actions-poetry@v2.1.6
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: View poetry --version
+        run: poetry --version
+
+      # Package Setup
+      - name: Install deps
+        run: poetry install -n -v --all-extras
+
+      # CI checks
+      - name: Pytest
+        run: poetry run python -m pytest
+
+      - name: mkdocs
+        run: poetry run python -m mkdocs build --strict
+
+
+  release:
+    # Run when there is a new push on the release branch
+    runs-on: 'ubuntu-latest'
+    needs: ci
+    if: endsWith(github.ref, 'heads/release') && (github.event_name == 'push')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+
+      # Documentation setup
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+      - name: View Quarto version
+        run:
+          quarto --version
+
+      # Python setup
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: View Python --version
+        run: python --version
+
+      # Poetry Setup
+      - name: Python Poetry Action
+        uses: abatilo/actions-poetry@v2.1.6
+        with:
+          poetry-version: '1.2.0'
+      - name: View poetry --version
+        run: poetry --version
+
+      # Package Setup
+      - name: Install deps
+        run: poetry install -n -v --all-extras
+
+      - name: Build package
+        run: |
+          poetry build
+
+      # Publishing Docs
+      - name: Deploy Docs
+        run: |
+          poetry run python -m mkdocs gh-deploy --strict --force
+
+      # Publish Package
+      - name: Publish Setup
+        env:
+          PYPITOKEN: ${{ secrets.PYPITOKEN }}
+        run: |
+          poetry config pypi-token.pypi ${PYPITOKEN}
+      - name: Publish
+        run: |
+          poetry publish --build --no-interaction

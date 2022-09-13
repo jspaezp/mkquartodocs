@@ -29,3 +29,44 @@ build-backend = "poetry.core.masonry.api"
 #         'pluginname = path.to.some_plugin:SomePluginClass',
 #     ]
 # }
+
+[tool.black]
+target-version = [ "py39", ]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.flake8]
+min_python_version = "3.9.0"
+max-line-length = 88
+ban-relative-imports = true
+# flake8-use-fstring: https://github.com/MichaelKim0407/flake8-use-fstring#--percent-greedy-and---format-greedy
+format-greedy = 1
+inline-quotes = "double"
+ignore = "E203,W503"
+per-file-ignores = "*/__init__.py: F401"
+docstring-convention = "numpy"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v"
+doctest_plus = "enabled"
+doctest_optionflags = "ELLIPSIS NORMALIZE_WHITESPACE"
+testpaths = [
+    "tests",
+    "mkquartodocs",
+]
+
+
+[tool.pydocstringformatter]
+style = "numpydoc"
+exclude = [".tox/**"]
+max-line-length = 88
+
+[tool.pylint]
+load-plugins= 'pylint.extensions.docparams'
+# disable = "C0103"
+
+[tool.pylint.format]
+max-line-length = 88
