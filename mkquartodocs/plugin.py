@@ -1,15 +1,14 @@
-
 import logging
-from typing import Any, MutableMapping, Tuple
-from mkdocs.utils import warning_filter
-import warnings
 import shutil
 import subprocess
+import warnings
+from collections.abc import MutableMapping
 from pathlib import Path
+from typing import Any
+
 import mkdocs
 from mkdocs.plugins import BasePlugin
-from subprocess import CalledProcessError
-from contextlib import contextmanager
+from mkdocs.utils import warning_filter
 
 
 class LoggerAdapter(logging.LoggerAdapter):
@@ -24,7 +23,7 @@ class LoggerAdapter(logging.LoggerAdapter):
         super().__init__(logger, {})
         self.prefix = prefix
 
-    def process(self, msg: str, kwargs: MutableMapping[str, Any]) -> Tuple[str, Any]:
+    def process(self, msg: str, kwargs: MutableMapping[str, Any]) -> tuple[str, Any]:
         """Process the message.
         Arguments:
             msg: The message:
@@ -46,9 +45,11 @@ def get_logger(name: str) -> LoggerAdapter:
     logger.addFilter(warning_filter)
     return LoggerAdapter(name.split(".", 1)[0], logger)
 
+
 log = get_logger(__name__)
 
-class DirContext():
+
+class DirContext:
     def __init__(self, path):
         self.path = path
 
@@ -68,40 +69,41 @@ class DirContext():
         return gen_files
 
     def newfiles(self):
-        gen_files = list(x for x in Path(self.path).rglob("*") if x not in self.pre_files)
+        gen_files = list(
+            x for x in Path(self.path).rglob("*") if x not in self.pre_files
+        )
         return gen_files
-        
+
 
 class MkDocstringPlugin(BasePlugin):
     config_scheme = (
-        ('quarto_path', mkdocs.config.config_options.Type(Path)),
-        ('keep_out', mkdocs.config.config_options.Type(bool)),
+        ("quarto_path", mkdocs.config.config_options.Type(Path)),
+        ("keep_out", mkdocs.config.config_options.Type(bool)),
     )
 
     def on_config(self, config, **kwargs):
-        passed_path = self.config['quarto_path']
-        quarto = shutil.which(passed_path if passed_path else 'quarto')
-        self.config['quarto_path'] = quarto
-        
+        passed_path = self.config["quarto_path"]
+        quarto = shutil.which(passed_path if passed_path else "quarto")
+        self.config["quarto_path"] = quarto
+
         return config
 
     def on_pre_build(self, config):
-        quarto = self.config['quarto_path']
-        docs_dir = config['docs_dir']
+        quarto = self.config["quarto_path"]
+        docs_dir = config["docs_dir"]
 
         quarto_docs = Path(docs_dir).rglob("*.qmd")
         quarto_docs = [str(x) for x in quarto_docs]
-        
+
         self.dir_context = DirContext(docs_dir)
         self.dir_context.enter()
         if quarto_docs:
             for x in quarto_docs:
                 log.info(f"Rendering {x}")
-                compl_process = subprocess.call([quarto, 'render', x, '--to=markdown'])
+                subprocess.call([quarto, "render", x, "--to=markdown"])
         else:
             warnings.warn(f"No quarto files were found in directory {docs_dir}")
         log.info(self.dir_context.newfiles())
-
 
     def on_post_build(self, config):
         log.info("Cleaning up:")
