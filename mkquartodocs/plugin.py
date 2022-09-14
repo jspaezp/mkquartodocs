@@ -78,7 +78,7 @@ class DirContext:
 class MkDocstringPlugin(BasePlugin):
     config_scheme = (
         ("quarto_path", mkdocs.config.config_options.Type(Path)),
-        ("keep_out", mkdocs.config.config_options.Type(bool)),
+        ("keep_out", mkdocs.config.config_options.Type(bool, default=False)),
     )
 
     def on_config(self, config, **kwargs):
