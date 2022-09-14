@@ -48,7 +48,10 @@ python-versions = ">=3.7.2"
 [package.dependencies]
 lazy-object-proxy = ">=1.4.0"
 typing-extensions = {version = ">=3.10", markers = "python_version < \"3.10\""}
-wrapt = {version = ">=1.11,<2", markers = "python_version < \"3.11\""}
+wrapt = [
+    {version = ">=1.11,<2", markers = "python_version < \"3.11\""},
+    {version = ">=1.14,<2", markers = "python_version >= \"3.11\""},
+]
 
 [[package]]
 name = "asttokens"
@@ -1778,8 +1781,8 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">3.8,<3.11"
-content-hash = "8b2d3bba6cb38147434c5378eae1ccfb6c7e32e1582edbbf8760a89a8b970a51"
+python-versions = ">3.8,<3.12"
+content-hash = "eb6c9a25a9a84b9786bd0bd3f5f0eecdd319454c5754c8fb44e159c9b8d55f73"
 
 [metadata.files]
 appnope = [
