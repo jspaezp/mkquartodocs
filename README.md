@@ -32,7 +32,7 @@ and copying outpus.
 1. Install `mkquartodocs`
 
 ```shell
-pip install placeholderBecauseItIsNotPublished
+pip install mkquartodocs
 ```
 
 ## Configuration
