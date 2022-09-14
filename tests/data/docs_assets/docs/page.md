@@ -4,8 +4,7 @@ ______________________________________________________________________
 
 # This is a file
 
-::: cell
-::: cell-output-display
+::: cell ::: cell-output-display
 
 <div>
 
@@ -13,8 +12,7 @@ ______________________________________________________________________
 <p>
 ```
 
-![](page_files/figure-markdown/mermaid-figure-1.png){width="7in"
-height="5in"}
+![](page_files/figure-markdown/mermaid-figure-1.png){width="7in" height="5in"}
 
 ```{=html}
 </p>

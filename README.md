@@ -2,19 +2,15 @@
 
 **Make gorgeous reproducible documentation with quarto and mkdocs**
 
-It is a plugin for [mkdocs](https://www.mkdocs.org/) that renders
-quarto markdown documents into github, so they are built with the
-rest of the documentation.
+It is a plugin for [mkdocs](https://www.mkdocs.org/) that renders [quarto](https://quarto.org) markdown documents into
+github, so they are built with the rest of the documentation.
 
 ### Why?
 
-In many instances the documentation contains runnable code, and it
-makes sense that you verify that the code runs and keep the output
-of the code in sync with the current status of the document and
-software packages involved.
+In many instances the documentation contains runnable code, and it makes sense that you verify that the code runs and
+keep the output of the code in sync with the current status of the document and software packages involved.
 
-**But mainly** I really got tired of manually rendering documents
-and copying outpus.
+**But mainly** I really got tired of manually rendering documents and copying outpus.
 
 ## Usage
 
@@ -68,5 +64,5 @@ plugins:
 
 **NOTHING !!! you do not have to run it manually!!**
 
-When you call `mkdocs build`, it should automatically find your `.qmd`
-files, render them, generate the output and clean after itself.
+When you call `mkdocs build`, it should automatically find your `.qmd` files, render them, generate the output and clean
+after itself.
