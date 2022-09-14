@@ -38,7 +38,7 @@ jobs:
       - name: Install Stuff
         run: poetry install --no-root --only dev
       - name: mdformat
-        run: for i in $(find . -regex ".*.md" -o -regex ".*.qmd"); do poetry run mdformat $i ; done
+        run: for i in $(find . -regex ".*.md" -o -regex ".*.qmd"); do poetry run mdformat --check $i ; done
       - name: Black
         run: poetry run python -m black . --check --diff
       - name: flake8
