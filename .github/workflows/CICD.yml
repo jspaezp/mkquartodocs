@@ -147,4 +147,4 @@ jobs:
           poetry config pypi-token.pypi ${PYPITOKEN}
       - name: Publish
         run: |
-          poetry publish --build --no-interaction
+          poetry publish --no-interaction
