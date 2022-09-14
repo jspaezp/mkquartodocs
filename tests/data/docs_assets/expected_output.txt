@@ -1,0 +1,3 @@
+./site/page/index.html
+./site/index.html
+./site/page_files/figure-markdown/mermaid-figure-1.png

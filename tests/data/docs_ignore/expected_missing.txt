@@ -1,0 +1,4 @@
+./site/my_broken_page.html
+./site/my_broken_page_files
+./site/page1.html
+./site/page1_files

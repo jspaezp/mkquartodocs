@@ -2,19 +2,15 @@
 
 **Make gorgeous reproducible documentation with quarto and mkdocs**
 
-It is a plugin for [mkdocs](https://www.mkdocs.org/) that renders
-quarto markdown documents into github, so they are built with the
-rest of the documentation.
+It is a plugin for [mkdocs](https://www.mkdocs.org/) that renders [quarto](https://quarto.org) markdown documents into
+github, so they are built with the rest of the documentation.
 
 ### Why?
 
-In many instances the documentation contains runnable code, and it
-makes sense that you verify that the code runs and keep the output
-of the code in sync with the current status of the document and
-software packages involved.
+In many instances the documentation contains runnable code, and it makes sense that you verify that the code runs and
+keep the output of the code in sync with the current status of the document and software packages involved.
 
-**But mainly** I really got tired of manually rendering documents
-and copying outpus.
+**But mainly** I really got tired of manually rendering documents and copying outpus.
 
 ## Usage
 
@@ -51,7 +47,9 @@ plugins:
 Available configuration options:
 
 - **quarto_path**: Specifies where to look for the quarto executable.
-- **keep_out**: If true it will skip the cleanup step in the directory.
+- **keep_output**: If true it will skip the cleanup step in the directory.
+- **ignore**: a python regular expressions that if matched will mark the file to not be rendered. Note that they need to
+  be full matches
 
 ```yaml
 # Whatever is in your mkdocs.yml configuration file....
@@ -59,8 +57,9 @@ Available configuration options:
 
 plugins:
   - mkquartodocs:
-    quarto_path: /home/my_folder/some/weird/place/to/have/executables/quarto
-    keep_out: true
+      quarto_path: /home/my_folder/some/weird/place/to/have/executables/quarto
+      keep_output: true
+      ignore: (.*broken.*.qmd)|(.*page[0-9].qmd)
 
 ```
 
@@ -68,5 +67,13 @@ plugins:
 
 **NOTHING !!! you do not have to run it manually!!**
 
-When you call `mkdocs build`, it should automatically find your `.qmd`
-files, render them, generate the output and clean after itself.
+When you call `mkdocs build`, it should automatically find your `.qmd` files, render them, generate the output and clean
+after itself.
+
+# TODO
+
+The things that need to/could be added to the project:
+
+- [ ] quarto project support
+- [ ] render in temporary directory, posibly with a 'safe' argument
+- [ ] addition of files not in the docs directory, 'include' argument
