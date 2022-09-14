@@ -40,12 +40,11 @@ pip install placeholderBecauseItIsNotPublished
 Add `mkquartodocs` to your plugins in your `mkdocs.yml`
 
 ```yaml
-
 # Whatever is in your mkdocs.yml configuration file....
 # ...
 
 plugins:
-    - mkquartodocs
+  - mkquartodocs
 
 ```
 
@@ -55,14 +54,13 @@ Available configuration options:
 - **keep_out**: If true it will skip the cleanup step in the directory.
 
 ```yaml
-
 # Whatever is in your mkdocs.yml configuration file....
 # ...
 
 plugins:
-    - mkquartodocs:
-      quarto_path: /home/my_folder/some/weird/place/to/have/executables/quarto
-      keep_out: true
+  - mkquartodocs:
+    quarto_path: /home/my_folder/some/weird/place/to/have/executables/quarto
+    keep_out: true
 
 ```
 

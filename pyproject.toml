@@ -20,6 +20,11 @@ pyupgrade = "^2.37.3"
 pytest-datadir = "^1.3.1"
 pytest = "^7.1.3"
 Flake8-pyproject = "^1.1.0.post0"
+mdformat = "^0.7.16"
+mdformat-gfm = "^0.3.5"
+mdformat-black = "^0.1.1"
+mdformat-config = "^0.1.3"
+mdformat-beautysh = "^0.1.1"
 
 
 [tool.poetry.group.docs.dependencies]
