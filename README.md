@@ -66,3 +66,14 @@ plugins:
 
 When you call `mkdocs build`, it should automatically find your `.qmd` files, render them, generate the output and clean
 after itself.
+
+# TODO
+
+The things that need to/could be added to the project:
+
+- [ ] quarto project support
+- [ ] ignores configuration
+- [ ] cleanup
+- [ ] render in temporary directory
+- [ ] refactor logging
+- [ ] addition of files not in the docs directory
