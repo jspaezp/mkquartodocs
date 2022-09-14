@@ -1,8 +1,10 @@
 
 site/
+dist/
 
 **/__pycache__
 **.pyc
+.coverage
 
 tests/**/site
 tests/**/docs/*_files

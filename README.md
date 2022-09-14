@@ -47,7 +47,9 @@ plugins:
 Available configuration options:
 
 - **quarto_path**: Specifies where to look for the quarto executable.
-- **keep_out**: If true it will skip the cleanup step in the directory.
+- **keep_output**: If true it will skip the cleanup step in the directory.
+- **ignore**: a python regular expressions that if matched will mark the file to not be rendered. Note that they need to
+  be full matches
 
 ```yaml
 # Whatever is in your mkdocs.yml configuration file....
@@ -55,8 +57,9 @@ Available configuration options:
 
 plugins:
   - mkquartodocs:
-    quarto_path: /home/my_folder/some/weird/place/to/have/executables/quarto
-    keep_out: true
+      quarto_path: /home/my_folder/some/weird/place/to/have/executables/quarto
+      keep_output: true
+      ignore: (.*broken.*.qmd)|(.*page[0-9].qmd)
 
 ```
 
@@ -72,8 +75,5 @@ after itself.
 The things that need to/could be added to the project:
 
 - [ ] quarto project support
-- [ ] ignores configuration
-- [ ] cleanup
-- [ ] render in temporary directory
-- [ ] refactor logging
-- [ ] addition of files not in the docs directory
+- [ ] render in temporary directory, posibly with a 'safe' argument
+- [ ] addition of files not in the docs directory, 'include' argument

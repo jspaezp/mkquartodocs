@@ -1,0 +1,8 @@
+./mkdocs.yml
+./docs/index.md
+./site/index.html
+./site/404.html
+./site/img/favicon.ico
+./site/img/grid.png
+./site/sitemap.xml
+./site/sitemap.xml.gz

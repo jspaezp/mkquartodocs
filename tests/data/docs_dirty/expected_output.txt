@@ -1,0 +1,5 @@
+# Make sure that if there was
+# a markdown there before,
+# it is still there
+# Note that it only tests the existance, not the content
+./docs/page.md

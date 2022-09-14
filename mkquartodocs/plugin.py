@@ -1,92 +1,55 @@
-import logging
+import re
 import shutil
 import subprocess
 import warnings
-from collections.abc import MutableMapping
 from pathlib import Path
-from typing import Any
 
-import mkdocs
+from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
-from mkdocs.utils import warning_filter
 
-
-class LoggerAdapter(logging.LoggerAdapter):
-    """A logger adapter to prefix messages."""
-
-    def __init__(self, prefix: str, logger: logging.Logger):
-        """Initialize the object.
-        Arguments:
-            prefix: The string to insert in front of every message.
-            logger: The logger instance.
-        """
-        super().__init__(logger, {})
-        self.prefix = prefix
-
-    def process(self, msg: str, kwargs: MutableMapping[str, Any]) -> tuple[str, Any]:
-        """Process the message.
-        Arguments:
-            msg: The message:
-            kwargs: Remaining arguments.
-        Returns:
-            The processed message.
-        """
-        return f"{self.prefix}: {msg}", kwargs
-
-
-def get_logger(name: str) -> LoggerAdapter:
-    """Return a pre-configured logger.
-    Arguments:
-        name: The name to use with `logging.getLogger`.
-    Returns:
-        A logger configured to work well in MkDocs.
-    """
-    logger = logging.getLogger(f"mkdocs.plugins.{name}")
-    logger.addFilter(warning_filter)
-    return LoggerAdapter(name.split(".", 1)[0], logger)
-
+from .context import DirWatcherContext
+from .logging import get_logger
 
 log = get_logger(__name__)
 
 
-class DirContext:
-    def __init__(self, path):
-        self.path = path
-
-    def __enter__(self):
-        self.enter()
-
-    def enter(self):
-        self.pre_files = list(Path(self.path).rglob("*"))
-
-    def __exit__(self, exc_type, exc_value, exc_traceback):
-        self.exit()
-
-    def exit(self):
-        gen_files = self.newfiles()
-        for file in gen_files:
-            log.info(file)
-        return gen_files
-
-    def newfiles(self):
-        gen_files = list(
-            x for x in Path(self.path).rglob("*") if x not in self.pre_files
-        )
-        return gen_files
+def _delete_file(path):
+    """Delete a file or an empty directory."""
+    path = Path(path)
+    if path.is_file():
+        path.unlink()
+    elif path.is_dir():
+        path.rmdir()
 
 
 class MkDocstringPlugin(BasePlugin):
     config_scheme = (
-        ("quarto_path", mkdocs.config.config_options.Type(Path)),
-        ("keep_out", mkdocs.config.config_options.Type(bool, default=False)),
+        ("quarto_path", config_options.Type(Path)),
+        ("ignore", config_options.Type(str)),
+        ("keep_output", config_options.Type(bool, default=False)),
     )
 
     def on_config(self, config, **kwargs):
         passed_path = self.config["quarto_path"]
         quarto = shutil.which(passed_path if passed_path else "quarto")
         self.config["quarto_path"] = quarto
+        # self.ignores = [re.compile(x) for x in self.config["ignore"]]
+
+        if self.config["ignore"]:
+            self.ignores = [re.compile(self.config["ignore"])]
+        else:
+            self.ignores = []
+        self.exit_action = _delete_file if not self.config["keep_output"] else None
 
         return config
+
+    def _filter_ignores(self, paths):
+        out = []
+        for x in paths:
+            if not any(re.fullmatch(pattern, x) for pattern in self.ignores):
+                out.append(x)
+
+        return out
 
     def on_pre_build(self, config):
         quarto = self.config["quarto_path"]
@@ -94,8 +57,9 @@ class MkDocstringPlugin(BasePlugin):
 
         quarto_docs = Path(docs_dir).rglob("*.qmd")
         quarto_docs = [str(x) for x in quarto_docs]
+        quarto_docs = self._filter_ignores(quarto_docs)
 
-        self.dir_context = DirContext(docs_dir)
+        self.dir_context = DirWatcherContext(docs_dir, exit_action=self.exit_action)
         self.dir_context.enter()
         if quarto_docs:
             for x in quarto_docs:
