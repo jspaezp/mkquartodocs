@@ -1,14 +1,17 @@
-site_name: mkquartodocs Docs
+site_name: mkquartodocs
+site_url: https://jspaezp.github.io/mkquartodocs/
+site_description: mkquartodocs extension
+site_author: J. Sebastian Paez
+
+repo_url: https://github.com/jspaezp/mkquartodocs
 
 theme:
   name: material
 
-extra_javascript:
-  - javascripts/config.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - Home: README.md
 
 plugins:
   - search
-  - autorefs
   - mkdocstrings
+  - mkquartodocs

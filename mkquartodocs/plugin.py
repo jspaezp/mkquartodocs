@@ -64,7 +64,7 @@ class MkDocstringPlugin(BasePlugin):
         if quarto_docs:
             for x in quarto_docs:
                 log.info(f"Rendering {x}")
-                subprocess.call([quarto, "render", x, "--to=markdown"])
+                subprocess.call([quarto, "render", x, "--to=commonmark"])
         else:
             warnings.warn(f"No quarto files were found in directory {docs_dir}")
         log.info(self.dir_context.newfiles())

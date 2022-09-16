@@ -37,14 +37,14 @@
 ./site/my_ugly_page.qmd
 ./site/my_ugly_page/index.html
 ./site/my_ugly_page_files
-./site/my_ugly_page_files/figure-markdown
-./site/my_ugly_page_files/figure-markdown/mermaid-figure-1.png
+./site/my_ugly_page_files/figure-commonmark
+./site/my_ugly_page_files/figure-commonmark/mermaid-figure-1.png
 
 # Rendered page
 ./site/page/index.html
 ./site/page_files
-./site/page_files/figure-markdown
-./site/page_files/figure-markdown/mermaid-figure-1.png
+./site/page_files/figure-commonmark
+./site/page_files/figure-commonmark/mermaid-figure-1.png
 ./site/page.qmd
 
 # Random transfered files

@@ -67,3 +67,14 @@ Once you stage the files with `git add` you can run `pre-commit run` to run all 
 
 All checks will run again when you generate your commit with pre-commit and will ask you to add the files again before
 generating the commit.
+
+## Coding standards
+
+Most of the standards are enforced automatically but ...
+
+1. `black` for style
+1. `isort` for import sorting
+1. `flake8` for basic linting
+1. `pylint` for additional linting
+1. `numpydoc` for docstrings
+1. `mdformat` for markdown document formatting

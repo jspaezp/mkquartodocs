@@ -21,10 +21,16 @@ def test_build(shared_datadir, doc_dir):
         for line in f:
             line = line.strip()
             if line and line[0] != "#":
-                assert (doc_dir_base / line).exists()
+                if not (doc_dir_base / line).exists():
+                    # If missing, report the files that do
+                    files = [str(x) for x in doc_dir_base.rglob("*")]
+                    files = [x.replace(str(doc_dir_base), "") for x in files]
+                    msg = f"File {line} not found"
+                    msg += "\n" + "\n".join(files)
+                    raise ValueError(msg)
 
     with open(doc_dir_base / "expected_missing.txt") as f:
         for line in f:
             line = line.strip()
             if line and line[0] != "#":
-                assert not (doc_dir_base / line).exists()
+                assert not (doc_dir_base / line).exists(), f"{line} should not exist"
