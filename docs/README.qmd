@@ -21,9 +21,8 @@ keep the output of the code in sync with the current status of the document and 
 1. Add `.qmd` files to your `./docs/` directoy
 1. Run `mkdocs build`
 
-This will render code chunks and save the outputs!
-Check out https://quarto.org/ for more examples on how to use the format.
-
+This will render code chunks and save the outputs! Check out https://quarto.org/ for more examples on how to use the
+format.
 
 This ....
 
@@ -40,8 +39,6 @@ Will become this ...
 ```{python}
 print(1+1)
 ```
-
-
 
 ## Installation
 
