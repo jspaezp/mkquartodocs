@@ -1,6 +1,8 @@
 
 # mkquartodocs
 
+![Example](readme_assets/gif.gif "Example")
+
 **Make gorgeous reproducible documentation with quarto and mkdocs**
 
 It is a plugin for [mkdocs](https://www.mkdocs.org/) that renders
