@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: ['3.9', '3.10', '3.11.0-rc.2']
         poetry-version: ['1.2.0',]
         os: ['ubuntu-latest', ]
     runs-on: ${{ matrix.os }}
@@ -147,4 +147,4 @@ jobs:
           poetry config pypi-token.pypi ${PYPITOKEN}
       - name: Publish
         run: |
-          poetry publish --build --no-interaction
+          poetry publish --no-interaction

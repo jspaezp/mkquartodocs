@@ -1,0 +1,8 @@
+./mkdocs.yml
+./docs/page.qmd
+./docs/index.md
+
+./site/page/index.html
+./site/index.html
+./site/404.html
+./site/page.qmd

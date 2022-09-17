@@ -7,8 +7,10 @@ readme = "README.md"
 packages = [{include = "mkquartodocs"}]
 
 [tool.poetry.dependencies]
-python = ">3.8,<3.11"
+python = ">3.8,<3.12"
 mkdocs = "^1.3.1"
+jupyter = "^1.0.0"
+nbformat = "^5.5.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.8.0"
@@ -25,12 +27,15 @@ mdformat-gfm = "^0.3.5"
 mdformat-black = "^0.1.1"
 mdformat-config = "^0.1.3"
 mdformat-beautysh = "^0.1.1"
+mdformat_frontmatter = "^0.4.1"
+pytest-cov = "^3.0.0"
 
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^8.5.0"
 mkdocs-autorefs = "^0.4.1"
 mkdocstrings = {extras = ["python"], version = "^0.19.0"}
+
 
 [build-system]
 requires = ["poetry-core"]
@@ -66,7 +71,7 @@ docstring-convention = "numpy"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-v"
+addopts = "-v --cov=mkquartodocs"
 doctest_plus = "enabled"
 doctest_optionflags = "ELLIPSIS NORMALIZE_WHITESPACE"
 testpaths = [

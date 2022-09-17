@@ -1,0 +1,52 @@
+# input files
+./mkdocs.yml
+./expected_output.txt
+./docs
+./docs/my_ugly_page.qmd
+./docs/page.qmd
+./docs/my_broken_page.qmd
+./docs/index.md
+./docs/page1.qmd
+./expected_missing.txt
+
+# site basis
+./site/404.html
+./site/index.html
+./site/css
+./site/css/bootstrap.min.css
+./site/css/font-awesome.min.css
+./site/css/base.css
+./site/js
+./site/js/bootstrap.min.js
+./site/js/jquery-1.10.2.min.js
+./site/js/base.js
+./site/img
+./site/img/favicon.ico
+./site/img/grid.png
+./site/sitemap.xml
+./site/sitemap.xml.gz
+./site/fonts
+./site/fonts/fontawesome-webfont.svg
+./site/fonts/fontawesome-webfont.woff2
+./site/fonts/fontawesome-webfont.ttf
+./site/fonts/fontawesome-webfont.woff
+./site/fonts/fontawesome-webfont.eot
+
+# rendered my_ugly_page
+./site/my_ugly_page
+./site/my_ugly_page.qmd
+./site/my_ugly_page/index.html
+./site/my_ugly_page_files
+./site/my_ugly_page_files/figure-commonmark
+./site/my_ugly_page_files/figure-commonmark/mermaid-figure-1.png
+
+# Rendered page
+./site/page/index.html
+./site/page_files
+./site/page_files/figure-commonmark
+./site/page_files/figure-commonmark/mermaid-figure-1.png
+./site/page.qmd
+
+# Random transfered files
+./site/my_broken_page.qmd
+./site/page1.qmd
