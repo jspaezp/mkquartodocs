@@ -143,9 +143,9 @@ entrypoints==0.4 ; python_version > "3.8" and python_version < "3.12" \
 executing==1.0.0 ; python_version > "3.8" and python_version < "3.12" \
     --hash=sha256:550d581b497228b572235e633599133eeee67073c65914ca346100ad56775349 \
     --hash=sha256:98daefa9d1916a4f0d944880d5aeaf079e05585689bebd9ff9b32e31dd5e1017
-fastjsonschema==2.16.1 ; python_version > "3.8" and python_version < "3.12" \
-    --hash=sha256:2f7158c4de792555753d6c2277d6a2af2d406dfd97aeca21d17173561ede4fe6 \
-    --hash=sha256:d6fa3ffbe719768d70e298b9fb847484e2bdfdb7241ed052b8d57a9294a8c334
+fastjsonschema==2.16.2 ; python_version > "3.8" and python_version < "3.12" \
+    --hash=sha256:01e366f25d9047816fe3d288cbfc3e10541daf0af2044763f3d0ade42476da18 \
+    --hash=sha256:21f918e8d9a1a4ba9c22e09574ba72267a6762d47822db9add95f6454e51cc1c
 ghp-import==2.1.0 ; python_version > "3.8" and python_version < "3.12" \
     --hash=sha256:8337dd7b50877f163d4c0289bc1f1c7f127550241988d568c1db512c4324a619 \
     --hash=sha256:9c535c4c61193c2df8871222567d7fd7e5014d835f97dc7b7439069e2413d343
