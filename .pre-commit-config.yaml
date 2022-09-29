@@ -6,7 +6,9 @@ repos:
   - id: check-yaml
     exclude: "mkdocs.yml"
   - id: end-of-file-fixer
+    exclude: "(.*tests/data/.*/.*.md)"
   - id: trailing-whitespace
+    exclude: "(.*tests/data/.*/.*.md)"
   - id: debug-statements
 - repo: https://github.com/asottile/pyupgrade
   rev: v2.38.2
@@ -20,7 +22,7 @@ repos:
   rev: 0.7.16
   hooks:
   - id: mdformat
-    exclude: "(README.md)|(.*docs/README.md)"
+    exclude: "(README.md)|(.*docs/README.md)|(.*tests/data/.*/.*.md)"
     additional_dependencies:
     - mdformat-gfm
     - mdformat-black

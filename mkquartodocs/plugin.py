@@ -7,6 +7,8 @@ from pathlib import Path
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
+from mkquartodocs.extension import QuartoCellDataExtension
+
 from .context import DirWatcherContext
 from .logging import get_logger
 
@@ -41,6 +43,8 @@ class MkDocstringPlugin(BasePlugin):
             self.ignores = []
         self.exit_action = _delete_file if not self.config["keep_output"] else None
 
+        self.extension = QuartoCellDataExtension()
+        config["markdown_extensions"].append(self.extension)
         return config
 
     def _filter_ignores(self, paths):

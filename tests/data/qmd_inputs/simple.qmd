@@ -1,0 +1,32 @@
+
+# Hello
+
+Here is some text
+
+```{python}
+#| error: true
+
+print("Hello World")
+
+import warnings
+
+warnings.warn("This is a warning")
+
+raise NotImplementedError
+```
+
+
+Some other text
+
+
+```{python}
+#| error: true
+
+print("Hello World2")
+
+import warnings
+
+warnings.warn("This is a warning")
+
+raise NotImplementedError
+```
