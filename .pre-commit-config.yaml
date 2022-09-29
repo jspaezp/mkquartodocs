@@ -31,6 +31,10 @@ repos:
   hooks:
     - id: black
       language_version: python3.9
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: v0.0.40
+  hooks:
+    - id: lint
 - repo: https://github.com/python-poetry/poetry
   rev: 1.2.0  # add version here
   hooks:
@@ -51,12 +55,6 @@ repos:
     entry: poetry run pydocstringformatter mkquartodocs
     language: system
     always_run: true
-  - id: flake8
-    name: flake8
-    entry: poetry run flake8 .
-    language: system
-    always_run: true
-    pass_filenames: false
   - id: pytest
     name: pytest-check
     entry: poetry run python -m pytest -x

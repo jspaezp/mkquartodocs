@@ -63,8 +63,17 @@ class MkDocstringPlugin(BasePlugin):
         self.dir_context.enter()
         if quarto_docs:
             for x in quarto_docs:
+                x = Path(x)
+                parent_path = x.parent
+                expected_out = Path(parent_path) / (x.stem + ".md")
+                if expected_out.exists():
+                    qmd_mtime = x.stat().st_mtime
+                    md_mtime = expected_out.stat().st_mtime
+                    if qmd_mtime < md_mtime:
+                        log.info(f"Skipping {x} as it is older than {expected_out}")
+                        continue
                 log.info(f"Rendering {x}")
-                subprocess.call([quarto, "render", x, "--to=commonmark"])
+                subprocess.call([quarto, "render", str(x), "--to=commonmark"])
         else:
             warnings.warn(f"No quarto files were found in directory {docs_dir}")
         log.info(self.dir_context.newfiles())

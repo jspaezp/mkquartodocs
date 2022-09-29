@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mkquartodocs"
-version = "0.2.0"
+version = "0.3.0"
 description = ""
 authors = ["J. Sebastian Paez <jspaezp@users.noreply.github.com>"]
 readme = "README.md"
@@ -11,6 +11,7 @@ python = ">3.8,<3.12"
 mkdocs = "^1.3.1"
 jupyter = "^1.0.0"
 nbformat = "^5.5.0"
+pytest-cov = "^4.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.8.0"
@@ -28,7 +29,7 @@ mdformat-black = "^0.1.1"
 mdformat-config = "^0.1.3"
 mdformat-beautysh = "^0.1.1"
 mdformat_frontmatter = "^0.4.1"
-pytest-cov = "^3.0.0"
+pytest-cov = "^4.0.0"
 
 
 [tool.poetry.group.docs.dependencies]

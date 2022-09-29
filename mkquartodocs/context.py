@@ -8,6 +8,20 @@ log = get_logger(__name__)
 
 
 class DirWatcherContext:
+    """Context manager to watch a directory for changes.
+
+    It checks the context for changes and returns a list of new files.
+    When used as a context manager, it will apply the exit action function
+    to each new file.
+
+    Example:
+    >>> exit_fun = lambda x: print(f"Deleting {x}")
+    >>> with DirWatcherContext("dir", exit_action = exit_fun) as ctx:
+    ...     # do something
+    ...     new_files = ctx.newfiles()
+    ... # all files in new_files are deleted
+    """
+
     def __init__(self, path, exit_action=None):
         self.logger = get_logger(__name__)
         self.path = path
@@ -40,6 +54,14 @@ class DirWatcherContext:
 class CloneDir(TemporaryDirectory):
     """
     Clones a directory to a temporary directory.
+
+    It is meant to be used as a context manager.
+
+    Examample:
+        >>> with CloneDir("path/to/dir") as clone:
+        >>>     print(clone.name)
+        >>>     # do stuff
+        >>> # clone is deleted
     """
 
     def __init__(
@@ -74,11 +96,3 @@ class CloneDir(TemporaryDirectory):
 
     def list_files(self):
         return list(Path(self.name).rglob("*"))
-
-
-if __name__ == "__main__":
-    import logging
-
-    logging.basicConfig(level=logging.DEBUG)
-    foo = CloneDir("tests/data")
-    foo.cleanup()
