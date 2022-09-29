@@ -59,7 +59,9 @@ class MkDocstringPlugin(BasePlugin):
         quarto_docs = [str(x) for x in quarto_docs]
         quarto_docs = self._filter_ignores(quarto_docs)
 
-        self.dir_context = DirWatcherContext(docs_dir, exit_action=self.exit_action)
+        self.dir_context = DirWatcherContext(
+            docs_dir, exit_action=self.exit_action, update_on_exit=False
+        )
         self.dir_context.enter()
         if quarto_docs:
             for x in quarto_docs:
@@ -76,8 +78,9 @@ class MkDocstringPlugin(BasePlugin):
                 subprocess.call([quarto, "render", str(x), "--to=commonmark"])
         else:
             warnings.warn(f"No quarto files were found in directory {docs_dir}")
-        log.info(self.dir_context.newfiles())
+
+        log.info(self.dir_context.update())
 
     def on_post_build(self, config):
         log.info("Cleaning up:")
-        self.dir_context.exit()
+        self.dir_context.exit(update=False)

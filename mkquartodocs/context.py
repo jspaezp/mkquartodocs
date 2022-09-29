@@ -17,15 +17,18 @@ class DirWatcherContext:
     Example:
     >>> exit_fun = lambda x: print(f"Deleting {x}")
     >>> with DirWatcherContext("dir", exit_action = exit_fun) as ctx:
-    ...     # do something
-    ...     new_files = ctx.newfiles()
-    ... # all files in new_files are deleted
+    ...     # make file A
+    ...     new_files = ctx.newfiles
+    ...     # make file B
+    ... # file a is deleted, file B is kept
     """
 
-    def __init__(self, path, exit_action=None):
+    def __init__(self, path, exit_action=None, update_on_exit=True):
         self.logger = get_logger(__name__)
         self.path = path
         self.exit_action = exit_action
+        self.newfiles = []
+        self.update_on_exit = update_on_exit
 
     def __enter__(self):
         self.enter()
@@ -34,20 +37,24 @@ class DirWatcherContext:
         self.pre_files = list(Path(self.path).rglob("*"))
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        self.exit()
+        self.exit(update=self.update_on_exit)
 
-    def exit(self):
-        gen_files = self.newfiles()
+    def exit(self, update=True):
+        gen_files = self.newfiles
+        if update:
+            gen_files = self.update()
+
         for file in gen_files:
             self.logger.debug(file)
             if self.exit_action:
                 self.exit_action(file)
         return gen_files
 
-    def newfiles(self):
+    def update(self):
         gen_files = list(
             x for x in Path(self.path).rglob("*") if x not in self.pre_files
         )[::-1]
+        self.newfiles = gen_files
         return gen_files
 
 
