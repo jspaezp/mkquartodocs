@@ -30,7 +30,7 @@ repos:
   rev: 22.8.0
   hooks:
     - id: black
-      language_version: python3.9
+      language_version: python3.8
 - repo: https://github.com/charliermarsh/ruff-pre-commit
   rev: v0.0.40
   hooks:

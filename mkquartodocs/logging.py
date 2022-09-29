@@ -22,7 +22,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 """
 
 import logging
-from typing import Any, MutableMapping
+from typing import Any, MutableMapping, Tuple
 
 from mkdocs.utils import warning_filter
 
@@ -40,7 +40,7 @@ class LoggerAdapter(logging.LoggerAdapter):
         super().__init__(logger, {})
         self.prefix = prefix
 
-    def process(self, msg: str, kwargs: MutableMapping[str, Any]) -> tuple[str, Any]:
+    def process(self, msg: str, kwargs: MutableMapping[str, Any]) -> Tuple[str, Any]:
         """Process the message.
 
         Arguments:
