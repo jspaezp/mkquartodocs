@@ -52,8 +52,7 @@ class DirWatcherContext:
 
 
 class CloneDir(TemporaryDirectory):
-    """
-    Clones a directory to a temporary directory.
+    """Clones a directory to a temporary directory.
 
     It is meant to be used as a context manager.
 

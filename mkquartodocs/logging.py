@@ -1,5 +1,4 @@
-"""
-Logging functionality and adapters
+"""Logging functionality and adapters.
 
 This section is ported from mkdocstrings,
 which is licensed under the ISC license.
@@ -33,6 +32,7 @@ class LoggerAdapter(logging.LoggerAdapter):
 
     def __init__(self, prefix: str, logger: logging.Logger):
         """Initialize the object.
+
         Arguments:
             prefix: The string to insert in front of every message.
             logger: The logger instance.
@@ -42,9 +42,11 @@ class LoggerAdapter(logging.LoggerAdapter):
 
     def process(self, msg: str, kwargs: MutableMapping[str, Any]) -> tuple[str, Any]:
         """Process the message.
+
         Arguments:
             msg: The message:
             kwargs: Remaining arguments.
+
         Returns:
             The processed message.
         """
@@ -53,8 +55,10 @@ class LoggerAdapter(logging.LoggerAdapter):
 
 def get_logger(name: str) -> LoggerAdapter:
     """Return a pre-configured logger.
+
     Arguments:
         name: The name to use with `logging.getLogger`.
+
     Returns:
         A logger configured to work well in MkDocs.
     """

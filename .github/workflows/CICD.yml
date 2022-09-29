@@ -36,11 +36,11 @@ jobs:
       - name: View poetry --version
         run: poetry --version
       - name: Install Stuff
-        run: poetry install --no-root --only dev
+        run: poetry install --no-root --only check
       - name: Black
         run: poetry run python -m black . --check --diff
-      - name: flake8
-        run: poetry run flake8 mkquartodocs
+      - name: ruff
+        run: poetry run ruff .
       - name: isort
         run: poetry run isort . --check
 

@@ -9,11 +9,11 @@ repos:
   - id: trailing-whitespace
   - id: debug-statements
 - repo: https://github.com/asottile/pyupgrade
-  rev: v2.37.3
+  rev: v2.38.2
   hooks:
   - id: pyupgrade
 - repo: https://github.com/PyCQA/autoflake
-  rev: v1.5.3
+  rev: v1.6.1
   hooks:
   - id: autoflake
 - repo: https://github.com/executablebooks/mdformat
@@ -35,8 +35,14 @@ repos:
   rev: v0.0.40
   hooks:
     - id: lint
+- repo: https://github.com/pycqa/pydocstyle
+  rev: 6.1.1  # pick a git hash / tag to point to
+  hooks:
+  - id: pydocstyle
+    additional_dependencies:
+    - toml
 - repo: https://github.com/python-poetry/poetry
-  rev: 1.2.0  # add version here
+  rev: 1.2.0rc1  # add version here
   hooks:
     - id: poetry-check
     - id: poetry-lock
