@@ -1,0 +1,33 @@
+
+# This is a simple example that uses python
+
+
+# Hello
+
+Here is some text
+
+```{python}
+#| error: true
+
+print("Hello World")
+
+import warnings
+warnings.warn("This is a warning")
+```
+
+Some python logic
+
+```{python}
+# Fizz buzz as a simple list comprehension
+out = ["Fizz"*(i%3==0)+"Buzz"*(i%5==0) or str(i)) for i in range(1, 101)]
+print(out)
+```
+
+
+An error just to see how it looks
+
+
+```{python}
+#| error: true
+raise NotImplementedError
+```
