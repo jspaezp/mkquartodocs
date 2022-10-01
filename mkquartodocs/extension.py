@@ -1,24 +1,69 @@
 import re
+from typing import Final
 
 from markdown import Markdown
 from markdown.extensions import Extension
+from markdown.extensions.admonition import AdmonitionProcessor
 from markdown.preprocessors import Preprocessor
 
 from .logging import get_logger
 
 log = get_logger(__name__)
-CELL_REGEX = re.compile(r"::: {\.cell .*}\s*$")
 
 # TODO: implement ways to actually use the information ...
 
 
-class RemoveCellDataPreprocessor(Preprocessor):
+class AdmotionCellDataPreprocessor(Preprocessor):
+
+    CELL_REGEX: Final = re.compile(r"^::: \{\.cell .*}\s*$")
+    CELL_END: Final = re.compile(r"^:::$")
+    CELL_ELEM_REGEX: Final = re.compile(r"^::: \{(.cell-\w+) (\.cell-[\w-]+)\}$")
+    CODEBLOCK_REGEX: Final = re.compile(r"^```{\.(\w+) .*}")
+
+    # https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
+    TYPE_MAPPING: Final = {
+        ".cell-output-stdout": '!!! note "output"',
+        ".cell-output-stderr": '!!! warning "stderr"',
+        ".cell-output-error": '!!! danger "error"',
+        ".cell-output-display": '!!! note "Figure"',
+    }
+
     def run(self, lines):
-        log.info("Running RemoveCellDataPreprocessor")
-        matches = [CELL_REGEX.match(x) for x in lines]
-        log.debug(f"Removing {sum(1 for x in matches if x)} lines")
-        out = [x for x, y in zip(lines, matches) if not y]
+        log.info(f"Running {self}")
+        outs = [self._process_line(x) for x in lines]
+        log.debug(f"Removing {sum(1 for x in outs if x is None)} lines")
+        out = [x for x in outs if x is not None]
+
         return out
+
+    def _process_line(self, line):
+        if sr := self.CELL_REGEX.search(line):
+            log.debug(f"Matched Cell start: {line}")
+            out = "\n\n"
+
+        elif sr := self.CELL_END.search(line):
+            log.debug(f"Matched Cell end: {line}")
+            out = "\n\n"
+
+        elif sr := self.CELL_ELEM_REGEX.search(line):
+            log.debug(f"Matched Cell element: {line}")
+            _, output_type = sr.groups()
+            out = self.TYPE_MAPPING[output_type]
+
+        elif sr := self.CODEBLOCK_REGEX.search(line):
+            log.debug(f"Matched codeblock: {line}")
+            lang = sr.groups(1)
+            out = f"```{lang}"
+        else:
+            out = line
+
+        if line != out:
+            log.debug(f"Transformed {line} -> {out}")
+        return out
+
+
+# TODO consider implemeting this ...
+# class CellBLockProcessor(BlockProcessor):
 
 
 class QuartoCellDataExtension(Extension):
@@ -30,8 +75,12 @@ class QuartoCellDataExtension(Extension):
         Adds an instance of the Processor to the Markdown instance.
             md: A `markdown.Markdown` instance.
         """
+        md.registerExtension(self)
         md.preprocessors.register(
-            RemoveCellDataPreprocessor(),
-            "QuatoCellData",
-            priority=75,  # Right before markdown.blockprocessors.HashHeaderProcessor
+            AdmotionCellDataPreprocessor(),
+            name="QuatoCellData",
+            priority=102,  # Right before Admonition
+        )
+        md.parser.blockprocessors.register(
+            AdmonitionProcessor(md.parser), "admonition", 105
         )

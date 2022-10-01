@@ -79,7 +79,7 @@ class MkDocstringPlugin(BasePlugin):
                         log.info(f"Skipping {x} as it is older than {expected_out}")
                         continue
                 log.info(f"Rendering {x}")
-                subprocess.call([quarto, "render", str(x), "--to=commonmark"])
+                subprocess.call([quarto, "render", str(x), "--to=markdown"])
         else:
             warnings.warn(f"No quarto files were found in directory {docs_dir}")
 

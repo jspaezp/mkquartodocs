@@ -8,3 +8,5 @@ dist/
 
 tests/**/site
 tests/**/docs/*_files
+
+quarto_example

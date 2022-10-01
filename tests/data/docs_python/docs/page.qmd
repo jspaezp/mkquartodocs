@@ -1,0 +1,15 @@
+# This is a file
+
+```{python}
+print("Hello")
+
+import warnings
+warnings.warn("This is a warning")
+```
+
+
+
+```{python}
+#| error: true
+raise NotImplementedError("This is an error")
+```
