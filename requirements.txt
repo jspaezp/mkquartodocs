@@ -200,9 +200,9 @@ fastjsonschema==2.16.2 ; python_version >= "3.8" and python_version < "3.12" \
 ghp-import==2.1.0 ; python_version >= "3.8" and python_version < "3.12" \
     --hash=sha256:8337dd7b50877f163d4c0289bc1f1c7f127550241988d568c1db512c4324a619 \
     --hash=sha256:9c535c4c61193c2df8871222567d7fd7e5014d835f97dc7b7439069e2413d343
-importlib-metadata==4.13.0 ; python_version >= "3.8" and python_version < "3.10" \
-    --hash=sha256:8a8a81bcf996e74fee46f0d16bd3eaa382a7eb20fd82445c3ad11f4090334116 \
-    --hash=sha256:dd0173e8f150d6815e098fd354f6414b0f079af4644ddfe90c71e2fc6174346d
+importlib-metadata==5.0.0 ; python_version >= "3.8" and python_version < "3.10" \
+    --hash=sha256:da31db32b304314d044d3c12c79bd59e307889b287ad12ff387b3500835fc2ab \
+    --hash=sha256:ddb0e35065e8938f867ed4928d0ae5bf2a53b7773871bfe6bcc7e4fcdc7dea43
 importlib-resources==5.9.0 ; python_version >= "3.8" and python_version < "3.9" \
     --hash=sha256:5481e97fb45af8dcf2f798952625591c58fe599d0735d86b10f54de086a61681 \
     --hash=sha256:f78a8df21a79bcc30cfd400bdc38f314333de7c0fb619763f6b9dabab8268bb7
