@@ -1,3 +1,11 @@
+
+![Pypi version](https://img.shields.io/pypi/v/mkquartodocs?style=flat-square)
+![Pypi Downloads](https://img.shields.io/pypi/dm/mkquartodocs?style=flat-square)
+![Github Activity](https://img.shields.io/github/last-commit/jspaezp/mkquartodocs?style=flat-square)
+![Python versions](https://img.shields.io/pypi/pyversions/mkquartodocs?style=flat-square)
+![GitHub Actions](https://img.shields.io/github/workflow/status/jspaezp/mkquartodocs/CI%20Testing/release?style=flat-square)
+![License](https://img.shields.io/pypi/l/mkquartodocs?style=flat-square)
+
 # mkquartodocs
 
 ![Example](readme_assets/gif.gif "Example")

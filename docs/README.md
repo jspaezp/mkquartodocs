@@ -1,4 +1,16 @@
 
+![Pypi
+version](https://img.shields.io/pypi/v/mkquartodocs?style=flat-square.png)
+![Pypi
+Downloads](https://img.shields.io/pypi/dm/mkquartodocs?style=flat-square.png)
+![Github
+Activity](https://img.shields.io/github/last-commit/jspaezp/mkquartodocs?style=flat-square.png)
+![Python
+versions](https://img.shields.io/pypi/pyversions/mkquartodocs?style=flat-square.png)
+![GitHub
+Actions](https://img.shields.io/github/workflow/status/jspaezp/mkquartodocs/CI%20Testing/release?style=flat-square.png)
+![License](https://img.shields.io/pypi/l/mkquartodocs?style=flat-square.png)
+
 # mkquartodocs
 
 ![Example](readme_assets/gif.gif "Example")
@@ -101,7 +113,7 @@ files, render them, generate the output and clean after itself.
 
 The things that need to/could be added to the project:
 
-- ☐ quarto project support
-- ☐ render in temporary directory, posibly with a ‘safe’ argument
-- ☐ addition of files not in the docs directory, ‘include’ argument
-- ☐ add readme to testing data
+- [ ] quarto project support
+- [ ] render in temporary directory, posibly with a ‘safe’ argument
+- [ ] addition of files not in the docs directory, ‘include’ argument
+- [ ] add readme to testing data

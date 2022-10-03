@@ -85,10 +85,14 @@ jobs:
 
       # CI checks
       - name: Pytest
-        run: poetry run python -m pytest
+        run: poetry run python -m pytest --cov .
 
       - name: mkdocs
         run: poetry run python -m mkdocs build --strict
+
+      - uses: codecov/codecov-action@v3
+        with:
+          verbose: true # optional (default = false)
 
 
   release:
