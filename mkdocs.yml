@@ -10,6 +10,8 @@ theme:
 
 nav:
   - Home: README.md
+  - Examples:
+    - 'Simple python execution': 'examples/example.md'
 
 plugins:
   - search
