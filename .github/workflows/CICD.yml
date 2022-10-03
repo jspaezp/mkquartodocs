@@ -85,7 +85,7 @@ jobs:
 
       # CI checks
       - name: Pytest
-        run: poetry run python -m pytest --cov .
+        run: poetry run python -m pytest --cov . --cov-report=xml
 
       - name: mkdocs
         run: poetry run python -m mkdocs build --strict
