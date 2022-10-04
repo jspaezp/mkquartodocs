@@ -17,7 +17,9 @@ class AdmotionCellDataPreprocessor(Preprocessor):
 
     CELL_REGEX: Final = re.compile(r"^::: \{\.cell .*}\s*$")
     CELL_END: Final = re.compile(r"^:::$")
-    CELL_ELEM_REGEX: Final = re.compile(r"^::: \{(.cell-\w+) (\.cell-[\w-]+)\}$")
+    CELL_ELEM_REGEX: Final = re.compile(
+        r"^::: \{(.cell-\w+) (\.cell-[\w-]+)( execution_count=\"\d\")?\}$"
+    )
     CODEBLOCK_REGEX: Final = re.compile(r"^```{\.(\w+) .*}")
 
     # https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
@@ -25,7 +27,7 @@ class AdmotionCellDataPreprocessor(Preprocessor):
         ".cell-output-stdout": '!!! note "output"',
         ".cell-output-stderr": '!!! warning "stderr"',
         ".cell-output-error": '!!! danger "error"',
-        ".cell-output-display": '!!! note "Figure"',
+        ".cell-output-display": '!!! note "Display"',
     }
 
     def run(self, lines):
@@ -47,7 +49,7 @@ class AdmotionCellDataPreprocessor(Preprocessor):
 
         elif sr := self.CELL_ELEM_REGEX.search(line):
             log.debug(f"Matched Cell element: {line}")
-            _, output_type = sr.groups()
+            output_type = sr.groups()[1]
             out = self.TYPE_MAPPING[output_type]
 
         elif sr := self.CODEBLOCK_REGEX.search(line):

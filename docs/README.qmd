@@ -107,3 +107,4 @@ The things that need to/could be added to the project:
 - [ ] render in temporary directory, posibly with a 'safe' argument
 - [ ] addition of files not in the docs directory, 'include' argument
 - [ ] add readme to testing data
+- [ ] move `INFO     -  mkquartodocs: Running RemoveCellDataPreprocessor` to debug log
