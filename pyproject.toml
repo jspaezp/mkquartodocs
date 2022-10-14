@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mkquartodocs"
-version = "0.5.6"
+version = "0.5.7"
 description = ""
 authors = ["J. Sebastian Paez <jspaezp@users.noreply.github.com>"]
 readme = "README.md"
