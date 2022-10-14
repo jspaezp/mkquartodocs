@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mkquartodocs"
-version = "0.5.4"
+version = "0.5.7"
 description = ""
 authors = ["J. Sebastian Paez <jspaezp@users.noreply.github.com>"]
 readme = "README.md"
@@ -45,7 +45,7 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.plugins."mkdocs.plugins"]
-"mkquartodocs" = "mkquartodocs.plugin:MkDocstringPlugin"
+"mkquartodocs" = "mkquartodocs.plugin:MkQuartoDocsPlugin"
 # Equivalent to:
 # entry_points={
 #     'mkdocs.plugins': [

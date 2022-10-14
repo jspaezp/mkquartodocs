@@ -18,7 +18,7 @@ class AdmotionCellDataPreprocessor(Preprocessor):
     CELL_REGEX: Final = re.compile(r"^::: \{\.cell .*}\s*$")
     CELL_END: Final = re.compile(r"^:::$")
     CELL_ELEM_REGEX: Final = re.compile(
-        r"^::: \{(.cell-\w+) (\.cell-[\w-]+)( execution_count=\"\d\")?\}$"
+        r"^::: \{(.cell-\w+) (\.cell-[\w-]+)( execution_count=\"\d+\")?\}$"
     )
     CODEBLOCK_REGEX: Final = re.compile(r"^```{\.(\w+) .*}")
 
@@ -81,7 +81,7 @@ class QuartoCellDataExtension(Extension):
         md.preprocessors.register(
             AdmotionCellDataPreprocessor(),
             name="QuatoCellData",
-            priority=102,  # Right before Admonition
+            priority=106,  # Right before Admonition
         )
         md.parser.blockprocessors.register(
             AdmonitionProcessor(md.parser), "admonition", 105
