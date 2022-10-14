@@ -84,6 +84,7 @@ class MkQuartoDocsPlugin(BasePlugin):
                         subprocess.run(
                             [quarto, "render", str(x), "--to=markdown"], check=True
                         )
+                        break
                     except subprocess.CalledProcessError:
                         # ERROR: Couldn't find open server
                         # it ocasionally fails with that error ...
