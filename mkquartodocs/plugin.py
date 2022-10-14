@@ -24,7 +24,7 @@ def _delete_file(path):
         path.rmdir()
 
 
-class MkDocstringPlugin(BasePlugin):
+class MkQuartoDocsPlugin(BasePlugin):
     config_scheme = (
         ("quarto_path", config_options.Type(Path)),
         ("ignore", config_options.Type(str)),
@@ -79,7 +79,17 @@ class MkDocstringPlugin(BasePlugin):
                         log.info(f"Skipping {x} as it is older than {expected_out}")
                         continue
                 log.info(f"Rendering {x}")
-                subprocess.run([quarto, "render", str(x), "--to=markdown"], check=True)
+                for i in range(5):
+                    try:
+                        subprocess.run(
+                            [quarto, "render", str(x), "--to=markdown"], check=True
+                        )
+                    except subprocess.CalledProcessError:
+                        # ERROR: Couldn't find open server
+                        # it ocasionally fails with that error ...
+                        if i == 4:
+                            raise
+                        warnings.warn(f"Quarto failed to render {x}, retrying")
         else:
             warnings.warn(f"No quarto files were found in directory {docs_dir}")
 

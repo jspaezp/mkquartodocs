@@ -81,7 +81,7 @@ class QuartoCellDataExtension(Extension):
         md.preprocessors.register(
             AdmotionCellDataPreprocessor(),
             name="QuatoCellData",
-            priority=102,  # Right before Admonition
+            priority=106,  # Right before Admonition
         )
         md.parser.blockprocessors.register(
             AdmonitionProcessor(md.parser), "admonition", 105
