@@ -1,0 +1,52 @@
+
+# This is a simple example that uses python
+
+You can take a look at the .qmd that generated this docs
+from:
+
+[https://github.com/jspaezp/mkquartodocs/tree/main/docs](https://github.com/jspaezp/mkquartodocs/tree/main/docs)
+
+
+But we can use python to check the contents of this file!
+
+```{python}
+with open("example.qmd", "r") as f:
+    for l in f:
+        print("> ", str(l))
+
+```
+
+
+# Hello
+
+Here is some text
+
+
+```{python}
+print("Hello World")
+```
+
+Here is how warnings look
+
+
+```{python}
+import warnings
+warnings.warn("This is a warning")
+```
+
+Some python logic
+
+
+```{python}
+# Fizz buzz as a simple list comprehension
+out = ["Fizz"*(i%3==0)+"Buzz"*(i%5==0) or str(i) for i in range(1, 101)]
+print(out)
+```
+
+And finally an error just to see how it looks
+
+
+```{python}
+#| error: true
+raise NotImplementedError
+```
