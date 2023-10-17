@@ -1,30 +1,30 @@
 [tool.poetry]
 name = "mkquartodocs"
-version = "0.5.7"
+version = "0.5.8"
 description = ""
 authors = ["J. Sebastian Paez <jspaezp@users.noreply.github.com>"]
 readme = "README.md"
-packages = [{include = "mkquartodocs"}]
+packages = [{ include = "mkquartodocs" }]
 license = "Apache 2.0"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
-mkdocs = "^1.3.1"
+mkdocs = "^1.4.2"
 jupyter = "^1.0.0"
-nbformat = "^5.5.0"
+nbformat = "^5.7.3"
 pytest-cov = "^4.0.0"
 
 [tool.poetry.group.check.dependencies]
 black = "^22.8.0"
 isort = "^5.10.1"
-pylint = "^2.15.2"
+pylint = "^2.16.2"
 ruff = "^0.0.46"
 
 [tool.poetry.group.dev.dependencies]
 pydocstringformatter = "^0.7.2"
 pyupgrade = "^2.37.3"
 pytest-datadir = "^1.3.1"
-pytest = "^7.1.3"
+pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 mdformat = "^0.7.16"
 mdformat-black = "^0.1.1"
@@ -36,7 +36,7 @@ mdformat_frontmatter = "^0.4.1"
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^8.5.0"
 mkdocs-autorefs = "^0.4.1"
-mkdocstrings = {extras = ["python"], version = "^0.19.0"}
+mkdocstrings = { extras = ["python"], version = "^0.19.1" }
 
 
 [build-system]
@@ -54,7 +54,7 @@ build-backend = "poetry.core.masonry.api"
 # }
 
 [tool.black]
-target-version = [ "py38", ]
+target-version = ["py38"]
 line-length = 88
 
 [tool.isort]
@@ -69,10 +69,7 @@ minversion = "6.0"
 addopts = "-v --cov=mkquartodocs"
 doctest_plus = "enabled"
 doctest_optionflags = "ELLIPSIS NORMALIZE_WHITESPACE"
-testpaths = [
-    "tests",
-    "mkquartodocs",
-]
+testpaths = ["tests", "mkquartodocs"]
 
 
 [tool.pydocstringformatter]
@@ -101,7 +98,7 @@ commands =
 """
 
 [tool.pylint]
-load-plugins= 'pylint.extensions.docparams'
+load-plugins = 'pylint.extensions.docparams'
 
 [tool.pylint.format]
 max-line-length = 88

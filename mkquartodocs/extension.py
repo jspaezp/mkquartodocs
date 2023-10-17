@@ -14,7 +14,6 @@ log = get_logger(__name__)
 
 
 class AdmotionCellDataPreprocessor(Preprocessor):
-
     CELL_REGEX: Final = re.compile(r"^::: \{\.cell .*}\s*$")
     CELL_END: Final = re.compile(r"^:::$")
     CELL_ELEM_REGEX: Final = re.compile(
