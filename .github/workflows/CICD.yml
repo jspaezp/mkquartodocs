@@ -30,7 +30,7 @@ jobs:
       - name: Python Poetry Action
         uses: abatilo/actions-poetry@v2.3.0
         with:
-          poetry-version: '1.2.0'
+          poetry-version: '1.6.1'
 
       - name: View poetry --version
         run: poetry --version
@@ -49,7 +49,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [ '3.8', '3.9', '3.10' ]
-        poetry-version: [ '1.2.0' ]
+        poetry-version: [ '1.6.1' ]
         os: [ 'ubuntu-latest' ]
     runs-on: ${{ matrix.os }}
     steps:
@@ -71,7 +71,7 @@ jobs:
 
       # Poetry Setup
       - name: Python Poetry Action
-        uses: abatilo/actions-poetry@v2.1.6
+        uses: abatilo/actions-poetry@v2.3.0
         with:
           poetry-version: ${{ matrix.poetry-version }}
       - name: View poetry --version
@@ -120,7 +120,7 @@ jobs:
       - name: Python Poetry Action
         uses: abatilo/actions-poetry@v2.1.6
         with:
-          poetry-version: '1.2.0'
+          poetry-version: '1.6.1'
       - name: View poetry --version
         run: poetry --version
 
