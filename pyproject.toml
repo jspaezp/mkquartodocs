@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mkquartodocs"
-version = "0.5.8"
+version = "0.5.9"
 description = ""
 authors = ["J. Sebastian Paez <jspaezp@users.noreply.github.com>"]
 readme = "README.md"
@@ -8,7 +8,7 @@ packages = [{ include = "mkquartodocs" }]
 license = "Apache 2.0"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
+python = ">=3.9,<3.13"
 mkdocs = "^1.4.2"
 jupyter = "^1.0.0"
 nbformat = "^5.7.3"
