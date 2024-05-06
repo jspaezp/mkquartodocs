@@ -36,7 +36,7 @@ mdformat_frontmatter = "^0.4.1"
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^8.5.0"
 mkdocs-autorefs = "^0.4.1"
-mkdocstrings = { extras = ["python"], version = "^0.19.1" }
+mkdocstrings = { extras = ["python"], version = "^0.25.1" }
 
 
 [build-system]
