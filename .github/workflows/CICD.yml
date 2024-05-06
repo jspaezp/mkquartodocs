@@ -118,7 +118,7 @@ jobs:
 
       # Poetry Setup
       - name: Python Poetry Action
-        uses: abatilo/actions-poetry@v2.1.6
+        uses: abatilo/actions-poetry@v2.3.0
         with:
           poetry-version: '1.7.1'
       - name: View poetry --version
