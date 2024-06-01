@@ -12,7 +12,7 @@ jobs:
   cheap_checks:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Python setup
       - uses: actions/setup-python@v4
@@ -54,7 +54,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       # Initial Setup
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Documentation setup
       - name: Setup Quarto
@@ -98,7 +98,7 @@ jobs:
     needs: ci
     if: endsWith(github.ref, 'heads/release') && (github.event_name == 'push')
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
