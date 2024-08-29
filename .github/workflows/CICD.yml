@@ -59,6 +59,8 @@ jobs:
       # Documentation setup
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: pre-release
       - name: View Quarto version
         run: quarto --version
 
