@@ -1,3 +1,6 @@
+---
+toc-title: Table of contents
+---
 
 ![Pypi
 version](https://img.shields.io/pypi/v/mkquartodocs?style=flat-square.png)
@@ -42,28 +45,32 @@ copying outpus.
 This will render code chunks and save the outputs! Check out
 https://quarto.org/ for more examples on how to use the format.
 
-This ….
+This ....
 
 ```` markdown
 
 ```{python}
-print(1+1)
+print(1+2)
 ```
 ````
 
-Will become this …
+Will become this ...
 
-``` python
-print(1+1)
+:::: {.cell execution_count="1"}
+``` {.python .cell-code}
+print(1+2)
 ```
 
-    2
+::: {.cell-output .cell-output-stdout}
+    3
+:::
+::::
 
 ## Installation
 
 1.  Make sure you have quarto installed in your computer.
 
-    - https://quarto.org/docs/get-started/
+    -   https://quarto.org/docs/get-started/
 
 2.  Install `mkquartodocs`
 
@@ -85,11 +92,11 @@ plugins:
 
 Available configuration options:
 
-- **quarto_path**: Specifies where to look for the quarto executable.
-- **keep_output**: If true it will skip the cleanup step in the
-  directory.
-- **ignore**: a python regular expressions that if matched will mark the
-  file to not be rendered. Note that they need to be full matches
+-   **quarto_path**: Specifies where to look for the quarto executable.
+-   **keep_output**: If true it will skip the cleanup step in the
+    directory.
+-   **ignore**: a python regular expressions that if matched will mark
+    the file to not be rendered. Note that they need to be full matches
 
 ``` yaml
 # Whatever is in your mkdocs.yml configuration file....
@@ -113,7 +120,10 @@ files, render them, generate the output and clean after itself.
 
 The things that need to/could be added to the project:
 
-- [ ] quarto project support
-- [ ] render in temporary directory, posibly with a ‘safe’ argument
-- [ ] addition of files not in the docs directory, ‘include’ argument
-- [ ] add readme to testing data
+-   [ ] quarto project support
+-   [ ] render in temporary directory, posibly with a 'safe' argument
+-   [ ] addition of files not in the docs directory, 'include' argument
+-   [ ] add readme to testing data
+-   [ ] move
+    `INFO     -  mkquartodocs: Running RemoveCellDataPreprocessor` to
+    debug log

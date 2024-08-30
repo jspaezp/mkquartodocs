@@ -12,10 +12,10 @@ jobs:
   cheap_checks:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Python setup
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -39,7 +39,7 @@ jobs:
       - name: Black
         run: poetry run python -m black . --check --diff
       - name: ruff
-        run: poetry run ruff .
+        run: poetry run ruff check .
       - name: isort
         run: poetry run isort . --check
 
@@ -48,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ '3.9', '3.11', '3.12' ]
+        python-version: [ '3.9', '3.11', '3.12', '3.13' ]
         poetry-version: [ '1.7.1' ]
         os: [ 'ubuntu-latest' ]
     runs-on: ${{ matrix.os }}
@@ -59,8 +59,6 @@ jobs:
       # Documentation setup
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          version: pre-release
       - name: View Quarto version
         run: quarto --version
 
@@ -90,7 +88,7 @@ jobs:
       - name: mkdocs
         run: poetry run python -m mkdocs build --strict
 
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           verbose: true # optional (default = false)
 
@@ -102,7 +100,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
 
       # Documentation setup

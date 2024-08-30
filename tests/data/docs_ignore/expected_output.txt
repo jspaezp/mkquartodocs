@@ -14,7 +14,8 @@
 ./site/index.html
 ./site/css
 ./site/css/bootstrap.min.css
-./site/css/font-awesome.min.css
+# ./site/css/font-awesome.min.css # Changed in a later version of quarto
+# In favor of fontawesome.min.css
 ./site/css/base.css
 ./site/js
 ./site/js/bootstrap.min.js

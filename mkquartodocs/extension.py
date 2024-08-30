@@ -15,9 +15,9 @@ log = get_logger(__name__)
 
 class AdmotionCellDataPreprocessor(Preprocessor):
     CELL_REGEX: Final = re.compile(r"^::: \{\.cell .*}\s*$")
-    CELL_END: Final = re.compile(r"^:::$")
+    CELL_END: Final = re.compile(r"^:{3,4}?$")
     CELL_ELEM_REGEX: Final = re.compile(
-        r"^::: \{(.cell-\w+) (\.cell-[\w-]+)( execution_count=\"\d+\")?\}$"
+        r"^:{3,4} \{(\.cell(-\w+)?)\s?(\.cell-[\w-]+)?( execution_count=\"\d+\")?\}"
     )
     CODEBLOCK_REGEX: Final = re.compile(r"^```{\.(\w+) .*}")
 
@@ -34,7 +34,6 @@ class AdmotionCellDataPreprocessor(Preprocessor):
         outs = [self._process_line(x) for x in lines]
         log.debug(f"Removing {sum(1 for x in outs if x is None)} lines")
         out = [x for x in outs if x is not None]
-
         return out
 
     def _process_line(self, line):
@@ -47,12 +46,17 @@ class AdmotionCellDataPreprocessor(Preprocessor):
             out = "\n\n"
 
         elif sr := self.CELL_ELEM_REGEX.search(line):
-            log.debug(f"Matched Cell element: {line}")
-            output_type = sr.groups()[1]
-            out = self.TYPE_MAPPING[output_type]
+            groups = {i: x for i, x in enumerate(sr.groups())}
+            log.debug(f"Matched Cell element: {line}, groups: {groups}")
+            if groups[3]:
+                out = "\n\n"
+            else:
+                output_type = groups[2]
+                out = self.TYPE_MAPPING[output_type]
 
         elif sr := self.CODEBLOCK_REGEX.search(line):
-            log.debug(f"Matched codeblock: {line}")
+            groups = {i: x for i, x in enumerate(sr.groups())}
+            log.debug(f"Matched codeblock: {line} -> {groups}")
             lang = sr.groups(1)
             out = f"```{lang}"
         else:
@@ -68,9 +72,7 @@ class AdmotionCellDataPreprocessor(Preprocessor):
 
 
 class QuartoCellDataExtension(Extension):
-    def extendMarkdown(
-        self, md: Markdown
-    ) -> None:  # noqa: N802 (casing: parent method's name)
+    def extendMarkdown(self, md: Markdown) -> None:  # noqa: N802 (casing: parent method's name)
         """Register the extension.
 
         Adds an instance of the Processor to the Markdown instance.
