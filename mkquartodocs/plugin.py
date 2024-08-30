@@ -85,10 +85,12 @@ class MkQuartoDocsPlugin(BasePlugin):
                             [quarto, "render", str(x), "--to=markdown"], check=True
                         )
                         break
-                    except subprocess.CalledProcessError:
+                    except subprocess.CalledProcessError as e:
                         # ERROR: Couldn't find open server
                         # it ocasionally fails with that error ...
                         if i == 4:
+                            log.error(f"Quarto failed to render {x} after 5 tries")
+                            log.error(f"Quarto failed with error: {e}")
                             raise
                         warnings.warn(f"Quarto failed to render {x}, retrying")
         else:
