@@ -26,12 +26,13 @@
 ./site/img/grid.png
 ./site/sitemap.xml
 ./site/sitemap.xml.gz
-./site/fonts
-./site/fonts/fontawesome-webfont.svg
-./site/fonts/fontawesome-webfont.woff2
-./site/fonts/fontawesome-webfont.ttf
-./site/fonts/fontawesome-webfont.woff
-./site/fonts/fontawesome-webfont.eot
+# Also chhanged in a later version of quarto/mkdocs
+# ./site/fonts
+# ./site/fonts/fontawesome-webfont.svg
+# ./site/fonts/fontawesome-webfont.woff2
+# ./site/fonts/fontawesome-webfont.ttf
+# ./site/fonts/fontawesome-webfont.woff
+# ./site/fonts/fontawesome-webfont.eot
 
 # rendered my_ugly_page
 ./site/my_ugly_page
