@@ -18,7 +18,8 @@
 # In favor of fontawesome.min.css
 ./site/css/base.css
 ./site/js
-./site/js/bootstrap.min.js
+# ./site/js/bootstrap.min.js
+# Replaced later for bootstrap.bundle.min.js
 ./site/js/base.js
 ./site/img
 ./site/img/favicon.ico
