@@ -12,10 +12,10 @@ jobs:
   cheap_checks:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Python setup
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -39,7 +39,7 @@ jobs:
       - name: Black
         run: poetry run python -m black . --check --diff
       - name: ruff
-        run: poetry run ruff .
+        run: poetry run ruff check .
       - name: isort
         run: poetry run isort . --check
 
@@ -54,7 +54,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       # Initial Setup
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Documentation setup
       - name: Setup Quarto
@@ -63,7 +63,7 @@ jobs:
         run: quarto --version
 
       # Python setup
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: View Python --version
@@ -88,7 +88,7 @@ jobs:
       - name: mkdocs
         run: poetry run python -m mkdocs build --strict
 
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           verbose: true # optional (default = false)
 
@@ -98,9 +98,9 @@ jobs:
     needs: ci
     if: endsWith(github.ref, 'heads/release') && (github.event_name == 'push')
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
 
       # Documentation setup
@@ -110,7 +110,7 @@ jobs:
         run: quarto --version
 
       # Python setup
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
       - name: View Python --version

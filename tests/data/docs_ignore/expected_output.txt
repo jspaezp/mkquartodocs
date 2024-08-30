@@ -14,22 +14,25 @@
 ./site/index.html
 ./site/css
 ./site/css/bootstrap.min.css
-./site/css/font-awesome.min.css
+# ./site/css/font-awesome.min.css # Changed in a later version of quarto
+# In favor of fontawesome.min.css
 ./site/css/base.css
 ./site/js
-./site/js/bootstrap.min.js
+# ./site/js/bootstrap.min.js
+# Replaced later for bootstrap.bundle.min.js
 ./site/js/base.js
 ./site/img
 ./site/img/favicon.ico
 ./site/img/grid.png
 ./site/sitemap.xml
 ./site/sitemap.xml.gz
-./site/fonts
-./site/fonts/fontawesome-webfont.svg
-./site/fonts/fontawesome-webfont.woff2
-./site/fonts/fontawesome-webfont.ttf
-./site/fonts/fontawesome-webfont.woff
-./site/fonts/fontawesome-webfont.eot
+# Also chhanged in a later version of quarto/mkdocs
+# ./site/fonts
+# ./site/fonts/fontawesome-webfont.svg
+# ./site/fonts/fontawesome-webfont.woff2
+# ./site/fonts/fontawesome-webfont.ttf
+# ./site/fonts/fontawesome-webfont.woff
+# ./site/fonts/fontawesome-webfont.eot
 
 # rendered my_ugly_page
 ./site/my_ugly_page
