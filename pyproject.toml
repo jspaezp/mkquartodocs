@@ -18,7 +18,7 @@ pytest-cov = "^4.0.0"
 black = "^22.8.0"
 isort = "^5.10.1"
 pylint = "^2.16.2"
-ruff = "^0.5.5"
+ruff = "^0.8.1"
 
 [tool.poetry.group.dev.dependencies]
 pydocstringformatter = "^0.7.2"
