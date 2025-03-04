@@ -15,7 +15,7 @@ dependencies = [
 [project.entry-points."mkdocs.plugins"]
 "mkquartodocs" = "mkquartodocs.plugin:MkQuartoDocsPlugin"
 
-[dependecy-groups]
+[dependency-groups]
 lint = [
     "black>=22.8.0",
     "pylint>=2.16.2",

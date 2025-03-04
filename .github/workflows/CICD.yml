@@ -18,9 +18,9 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Black
-        run: uv run python -m black . --check --diff
+        run: uv run --group lint python -m black . --check --diff
       - name: ruff
-        run: uv run ruff check .
+        run: uv run --group lint ruff check .
 
   ci:
     needs: cheap_checks
@@ -91,19 +91,21 @@ jobs:
 
       - name: Build package
         run: |
-          uv run python -m build
+          uv run --all-groups python -m build
 
       # Publishing Docs
       - name: Deploy Docs
         run: |
-          poetry run python -m mkdocs gh-deploy --strict --force
+          uv run python -m mkdocs gh-deploy --strict --force
 
-      # Publish Package
-      - name: Publish Setup
+      - name: Build package
+        run: |
+          uv run python -m build
+      
+      - name: Publish to PyPI
         env:
-          PYPITOKEN: ${{ secrets.PYPITOKEN }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPITOKEN }}
         run: |
-          poetry config pypi-token.pypi ${PYPITOKEN}
-      - name: Publish
-        run: |
-          poetry publish --no-interaction
+          python -m twine upload --non-interactive dist/*
+
