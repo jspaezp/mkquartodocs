@@ -19,7 +19,6 @@ class AdmotionCellDataPreprocessor(Preprocessor):
     CELL_END: Final = re.compile(r"^(:{3,})$")
     CELL_ELEM_REGEX: Final = re.compile(
         r"^(:{3,}) \{(.cell-\w+)\s?(\.cell-[\w-]+)?( execution_count=\"\d+\")?\}$"
-
     )
     CODEBLOCK_REGEX: Final = re.compile(r"^(`{3,}){\.(\w+) .*}")
 
