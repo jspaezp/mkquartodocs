@@ -1,4 +1,5 @@
 import re
+import time
 import shutil
 import subprocess
 import warnings
@@ -88,11 +89,12 @@ class MkQuartoDocsPlugin(BasePlugin):
                     except subprocess.CalledProcessError as e:
                         # ERROR: Couldn't find open server
                         # it ocasionally fails with that error ...
-                        if i == 4:
+                        if i >= 4:
                             log.error(f"Quarto failed to render {x} after 5 tries")
                             log.error(f"Quarto failed with error: {e}")
                             raise
                         warnings.warn(f"Quarto failed to render {x}, retrying")
+                        time.sleep(2)
         else:
             warnings.warn(f"No quarto files were found in directory {docs_dir}")
 
