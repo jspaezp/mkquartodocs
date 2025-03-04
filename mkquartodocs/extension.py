@@ -14,10 +14,12 @@ log = get_logger(__name__)
 
 
 class AdmotionCellDataPreprocessor(Preprocessor):
+
     CELL_REGEX: Final = re.compile(r"^(:{3,}) \{\.cell .*}\s*$")
     CELL_END: Final = re.compile(r"^(:{3,})$")
     CELL_ELEM_REGEX: Final = re.compile(
-        r"^(:{3,}) \{(.cell-\w+) (\.cell-[\w-]+)( execution_count=\"\d+\")?\}$"
+        r"^(:{3,}) \{(.cell-\w+)\s?(\.cell-[\w-]+)?( execution_count=\"\d+\")?\}$"
+
     )
     CODEBLOCK_REGEX: Final = re.compile(r"^(`{3,}){\.(\w+) .*}")
 
@@ -34,7 +36,6 @@ class AdmotionCellDataPreprocessor(Preprocessor):
         outs = [self._process_line(x) for x in lines]
         log.debug(f"Removing {sum(1 for x in outs if x is None)} lines")
         out = [x for x in outs if x is not None]
-
         return out
 
     def _process_line(self, line):
