@@ -14,12 +14,13 @@ log = get_logger(__name__)
 
 
 class AdmotionCellDataPreprocessor(Preprocessor):
-    CELL_REGEX: Final = re.compile(r"^::: \{\.cell .*}\s*$")
-    CELL_END: Final = re.compile(r"^:{3,4}?$")
+
+    CELL_REGEX: Final = re.compile(r"^(:{3,}) \{\.cell .*}\s*$")
+    CELL_END: Final = re.compile(r"^(:{3,})$")
     CELL_ELEM_REGEX: Final = re.compile(
-        r"^:{3,4} \{(\.cell(-\w+)?)\s?(\.cell-[\w-]+)?( execution_count=\"\d+\")?\}"
+        r"^(:{3,}) \{(.cell-\w+)\s?(\.cell-[\w-]+)?( execution_count=\"\d+\")?\}$"
     )
-    CODEBLOCK_REGEX: Final = re.compile(r"^```{\.(\w+) .*}")
+    CODEBLOCK_REGEX: Final = re.compile(r"^(`{3,}){\.(\w+) .*}")
 
     # https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
     TYPE_MAPPING: Final = {
@@ -46,19 +47,17 @@ class AdmotionCellDataPreprocessor(Preprocessor):
             out = "\n\n"
 
         elif sr := self.CELL_ELEM_REGEX.search(line):
-            groups = {i: x for i, x in enumerate(sr.groups())}
-            log.debug(f"Matched Cell element: {line}, groups: {groups}")
-            if groups[3]:
-                out = "\n\n"
-            else:
-                output_type = groups[2]
-                out = self.TYPE_MAPPING[output_type]
+            grp = sr.groups()
+            log.debug(f"Matched Cell element: {line}, groups: {grp}")
+            output_type = grp[2]
+            out = self.TYPE_MAPPING[output_type]
 
         elif sr := self.CODEBLOCK_REGEX.search(line):
-            groups = {i: x for i, x in enumerate(sr.groups())}
-            log.debug(f"Matched codeblock: {line} -> {groups}")
-            lang = sr.groups(1)
-            out = f"```{lang}"
+            grp = sr.groups()
+            log.debug(f"Matched codeblock: {line}, groups: {grp}")
+            lang = grp[2]
+            nesting_level = len(grp[1])
+            out = f"{'`' * nesting_level}{lang}"
         else:
             out = line
 
