@@ -54,12 +54,12 @@ jobs:
 
       # CI checks
       - name: Pytest
-        run: uv run --all-groups python -m pytest --cov . --cov-report=xml
+        run: uv run --all-groups python -m pytest -xs --cov . --cov-report=xml
 
       - name: mkdocs
         run: uv run --all-groups python -m mkdocs build --strict
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           verbose: true # optional (default = false)
 
