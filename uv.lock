@@ -1522,7 +1522,7 @@ check = [
 ]
 docs = [
     { name = "mkdocs-autorefs", specifier = ">=1.1.0" },
-    { name = "mkdocs-material", specifier = ">=9.5.33" },
+    { name = "mkdocs-material", specifier = ">=9.5.49" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.25.2" },
 ]
 lint = [

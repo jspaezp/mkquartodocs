@@ -101,11 +101,10 @@ jobs:
       - name: Build package
         run: |
           uv run python -m build
-      
+
       - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPITOKEN }}
         run: |
           python -m twine upload --non-interactive dist/*
-
