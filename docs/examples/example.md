@@ -17,27 +17,27 @@ with open("example.qmd", "r") as f:
 ```
 
 ::: {.cell-output .cell-output-stdout}
-    >  
+    >
 
     >  # This is a simple example that uses python
 
-    >  
+    >
 
     >  You can take a look at the .qmd that generated this docs
 
     >  from:
 
-    >  
+    >
 
     >  [https://github.com/jspaezp/mkquartodocs/tree/main/docs](https://github.com/jspaezp/mkquartodocs/tree/main/docs)
 
-    >  
+    >
 
-    >  
+    >
 
     >  But we can use python to check the contents of this file!
 
-    >  
+    >
 
     >  ```{python}
 
@@ -47,23 +47,23 @@ with open("example.qmd", "r") as f:
 
     >          print("> ", str(l))
 
-    >  
+    >
 
     >  ```
 
-    >  
+    >
 
-    >  
+    >
 
     >  # Hello
 
-    >  
+    >
 
     >  Here is some text
 
-    >  
+    >
 
-    >  
+    >
 
     >  ```{python}
 
@@ -71,13 +71,13 @@ with open("example.qmd", "r") as f:
 
     >  ```
 
-    >  
+    >
 
     >  Here is how warnings look
 
-    >  
+    >
 
-    >  
+    >
 
     >  ```{python}
 
@@ -87,13 +87,13 @@ with open("example.qmd", "r") as f:
 
     >  ```
 
-    >  
+    >
 
     >  Some python logic
 
-    >  
+    >
 
-    >  
+    >
 
     >  ```{python}
 
@@ -105,13 +105,13 @@ with open("example.qmd", "r") as f:
 
     >  ```
 
-    >  
+    >
 
     >  And finally an error just to see how it looks
 
-    >  
+    >
 
-    >  
+    >
 
     >  ```{python}
 
@@ -173,12 +173,12 @@ raise NotImplementedError
 ```
 
 ::: {.cell-output .cell-output-error}
-    NotImplementedError: 
+    NotImplementedError:
     [0;31m---------------------------------------------------------------------------[0m
     [0;31mNotImplementedError[0m                       Traceback (most recent call last)
     Cell [0;32mIn[5], line 1[0m
     [0;32m----> 1[0m [38;5;28;01mraise[39;00m [38;5;167;01mNotImplementedError[39;00m
 
-    [0;31mNotImplementedError[0m: 
+    [0;31mNotImplementedError[0m:
 :::
 ::::
