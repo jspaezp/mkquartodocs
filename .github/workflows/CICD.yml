@@ -107,4 +107,4 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPITOKEN }}
         run: |
-          python -m twine upload --non-interactive dist/*
+          uv run --with twine python -m twine upload --non-interactive dist/*
