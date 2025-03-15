@@ -83,7 +83,10 @@ class MkQuartoDocsPlugin(BasePlugin):
                 for i in range(5):
                     try:
                         subprocess.run(
-                            [quarto, "render", str(x), "--to=markdown"], check=True
+                            [quarto, "render", str(x), "--to=markdown"],
+                            check=True,
+                            # Note I use here markdown instead of gfm because
+                            # it explicitly renders mermaid diagrams
                         )
                         break
                     except subprocess.CalledProcessError as e:
