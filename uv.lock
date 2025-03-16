@@ -1637,6 +1637,7 @@ version = "0.5.14"
 source = { editable = "." }
 dependencies = [
     { name = "mkdocs" },
+    { name = "pymdown-extensions" },
 ]
 
 [package.dev-dependencies]
@@ -1666,7 +1667,10 @@ lint = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "mkdocs", specifier = ">=1.6.1" }]
+requires-dist = [
+    { name = "mkdocs", specifier = ">=1.6.1" },
+    { name = "pymdown-extensions" },
+]
 
 [package.metadata.requires-dev]
 check = [
