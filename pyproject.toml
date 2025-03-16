@@ -1,42 +1,41 @@
 [project]
 name = "mkquartodocs"
-version = "0.5.13"
+version = "0.5.14"
 description = ""
 authors = [
-    {name = "J. Sebastian Paez", email = "jspaezp@users.noreply.github.com"},
+  { name = "J. Sebastian Paez", email = "jspaezp@users.noreply.github.com" },
 ]
 readme = "README.md"
-license = {text = "Apache 2.0"}
-requires-python = ">=3.9,<3.14"
+license = { text = "Apache 2.0" }
+requires-python = ">=3.10,<3.14"
 dependencies = [
-    "mkdocs>=1.6.1",
+  "mkdocs>=1.6.1",
+  "pymdown-extensions",
 ]
 
 [project.entry-points."mkdocs.plugins"]
 "mkquartodocs" = "mkquartodocs.plugin:MkQuartoDocsPlugin"
 
 [dependency-groups]
-lint = [
-    "black>=24.10.0",
-    "pylint>=2.16.2",
-    "ruff>=0.8.4",
-]
+lint = ["black>=24.10.0", "pylint>=2.16.2", "ruff>=0.8.4"]
 check = [
-    "jupyter>=1.0.0",
-    "pytest-datadir>=1.3.1",
-    "pytest>=8.3.1",
-    "pytest-cov>=4.0.0",
-    "mdformat>=0.7.16",
-    "mdformat-black>=0.1.1",
-    "mdformat-config>=0.1.3",
-    "mdformat-beautysh>=0.1.1",
-    "mdformat_frontmatter>=2.0.8",
-    "build",
+  "jupyter>=1.0.0",
+  "pytest-datadir>=1.3.1",
+  "pytest>=8.3.1",
+  "pytest-cov>=4.0.0",
+  "mdformat>=0.7.16",
+  "mdformat-black>=0.1.1",
+  "mdformat-config>=0.1.3",
+  "mdformat-beautysh>=0.1.1",
+  "mdformat_frontmatter>=2.0.8",
+  "build",
 ]
 docs = [
-    "mkdocs-material>=9.5.49",
-    "mkdocs-autorefs>=1.1.0",
-    "mkdocstrings[python]>=0.25.2",
+  "mkdocs-material>=9.5.49",
+  "mkdocs-autorefs>=1.1.0",
+  "mkdocstrings[python]>=0.25.2",
+  "pandas",
+  "matplotlib",
 ]
 
 [build-system]
@@ -44,7 +43,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.black]
-target-version = ["py38"]
+target-version = ["py310"]
 line-length = 88
 
 [tool.isort]
