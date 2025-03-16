@@ -1,4 +1,15 @@
 ---
+biblio-config: true
+labels:
+  abstract: Abstract
+  affiliations: Affiliations
+  authors: Authors
+  description: Description
+  doi: Doi
+  keywords: Keywords
+  modified: Modified
+  published: Published
+  related_formats: Other Formats
 toc-title: Table of contents
 ---
 
