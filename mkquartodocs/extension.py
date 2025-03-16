@@ -8,6 +8,7 @@ from typing import Final
 from markdown import Markdown
 from markdown.extensions import Extension
 from markdown.extensions.admonition import AdmonitionProcessor
+from markdown.extensions.md_in_html import MarkdownInHtmlExtension
 from markdown.preprocessors import Preprocessor
 
 from .logging import get_logger
@@ -16,6 +17,9 @@ log = get_logger(__name__)
 
 CELL_REGEX: Final = re.compile(r"^(:{3,}) \{\.cell .*}\s*$")
 CELL_END: Final = re.compile(r"^(:{3,})$")
+
+# In theory it would be a 'cell-output' but there are other kinds of out
+# Cells contain multiple cell elements.
 CELL_ELEM_REGEX: Final = re.compile(
     r"^(:{3,}) \{(.cell-\w+)\s?(\.cell-[\w-]+)?( execution_count=\"\d+\")?\}$"
 )
@@ -35,8 +39,10 @@ class BlockType(enum.Enum):
     CODEBLOCK = "codeblock"
     HTML = "html"
 
+
 LINE_BLOCKS = [BlockType.CELL, BlockType.CODEBLOCK]
 LINECOL_BLOCKS = [BlockType.HTML]
+
 
 @dataclass(slots=True, frozen=True)
 class UnknownEnd:
@@ -48,9 +54,26 @@ class FileContent:
     lines: list[str]
 
     def get_line_content(self, cursor: Cursor) -> str:
-        line = self.lines[cursor.line]
+        try:
+            line = self.lines[cursor.line]
+        except IndexError:
+            breakpoint()
         # Return line content from the cursor column
         return line[cursor.col :]
+
+    def _trim_line(
+        self, line: str, start: Cursor | None = None, end: Cursor | None = None
+    ) -> str:
+        if start is None:
+            start = Cursor(line=0, col=0)
+        if end is None:
+            end = Cursor(line=len(line), col=len(line))
+        return line[start.col : end.col]
+
+    def get_lines_content(self, start: Cursor, end: Cursor) -> list[str]:
+        first = self._trim_line(self.lines[start.line], start=start, end=None)
+        last = self._trim_line(self.lines[end.line], start=None, end=end)
+        return [first] + self.lines[start.line + 1 : end.line] + [last]
 
 
 @dataclass(slots=True, frozen=True)
@@ -64,7 +87,7 @@ class Cursor:
                 self.line == other.line and self.col > other.col
             )
         elif isinstance(other, FileContent):
-            return self.line > other.line
+            return self.line > (len(other.lines) - 1)
         else:
             raise ValueError(f"Cannot compare Cursor with {type(other)}")
 
@@ -73,7 +96,7 @@ class Cursor:
 
     def advance_line(self, lines: int = 1) -> Cursor:
         return Cursor(self.line + lines, 0)
-    
+
     def advance_col(self, cols: int) -> Cursor:
         return Cursor(self.line, self.col + cols)
 
@@ -90,10 +113,32 @@ class BlockContext:
     end: Cursor | UnknownEnd
 
     @classmethod
-    def from_cell_start_line(cls, line: str) -> BlockContext:
-        pass
-        
+    def _from_cell_start_line(cls, line: str, line_number: int) -> BlockContext:
+        """This function assumes that you already checked that the line matches CELL_REGEX"""
+        sr = CELL_REGEX.search(line)
+        grp = sr.groups()
+        assert all(w == ":" for w in grp[0]), f"{grp[0]} should be :"
+        return BlockContext(
+            block_type=BlockType.CELL,
+            delimiter=grp[0],
+            attributes=grp[1:],
+            start=Cursor(line=line_number, col=0),
+            end=UnknownEnd(),
+        )
 
+    @classmethod
+    def _from_cell_element_line(cls, line: str, line_number: int) -> BlockContext:
+        """This function assumes that you already checked that the line matches CELL_ELEM_REGEX"""
+        sr = cls.CELL_ELEM_REGEX.search(line)
+        grp = sr.groups()
+        breakpoint()
+        return BlockContext(
+            block_type=BlockType.CELL,
+            delimiter=grp[0],
+            attributes=grp[1:],
+            start=Cursor(line=line_number, col=0),
+            end=UnknownEnd(),
+        )
 
     @classmethod
     def try_from_line(
@@ -105,23 +150,38 @@ class BlockContext:
         line = file_content.get_line_content(cursor)
         if sr := CELL_REGEX.search(line):
             log.debug(f"Matched Cell start: {line}")
-            return BlockContext.from_cell_start_line(line)
+            return BlockContext._from_cell_start_line(line, cursor.line)
 
-
-        elif sr := self.CELL_ELEM_REGEX.search(line):
+        elif sr := CELL_ELEM_REGEX.search(line):
             grp = sr.groups()
             log.debug(f"Matched Cell element: {line}, groups: {grp}")
-            breakpoint()
-            output_type = grp[2]
-            out = self.TYPE_MAPPING[output_type]
+            return BlockContext._from_cell_element_line(line, cursor.line)
 
-        elif sr := self.CODEBLOCK_REGEX.search(line):
+        elif sr := CODEBLOCK_REGEX.search(line):
             grp = sr.groups()
             log.debug(f"Matched codeblock: {line}, groups: {grp}")
-            lang = grp[2]
-            nesting_level = len(grp[1])
-            out = f"{'`' * nesting_level}{lang}"
-        raise NotImplementedError
+            return BlockContext(
+                block_type=BlockType.CODEBLOCK,
+                delimiter=grp[0],
+                attributes=grp[1:3],
+                start=cursor,
+                end=UnknownEnd(),
+            )
+
+        log.debug(f"No match for line: {line}")
+        return None
+
+    def find_inner_block(
+        self, file_content: FileContent, context: list[BlockContext]
+    ) -> BlockContext | None:
+        cursor = self.start.copy()
+        while cursor <= file_content:
+            tmp = BlockContext.try_from_line(file_content, cursor, context=context)
+            if tmp is not None:
+                cursor = tmp.find_end(file_content, context)
+                return tmp.with_end(end=cursor)
+            cursor = cursor.advance_line(1)
+        return None
 
     def with_end(self, end: Cursor | UnknownEnd) -> BlockContext:
         return BlockContext(
@@ -132,37 +192,97 @@ class BlockContext:
             end=end,
         )
 
-    def find_end(self, file_content: FileContent, context: list[BlockContext]) -> Cursor:
-
-        if sr := CELL_END.search(line):
-            log.debug(f"Matched Cell end: {line}")
-            if not context[-1].block_type == BlockType.CELL:
-                raise ValueError("Cell end without matching cell start")
-            self.nesting_state.pop()
-            out = "\n\n"
+    def find_end(
+        self, file_content: FileContent, context: list[BlockContext]
+    ) -> Cursor:
+        if self.block_type == BlockType.CELL:
+            return self._find_cell_end(file_content)
+        elif self.block_type == BlockType.CODEBLOCK:
+            return self._find_codeblock_end(file_content, context)
+        elif self.block_type == BlockType.HTML:
+            return self._find_html_end(file_content, context)
         raise NotImplementedError
 
-    def _find_linewise_end(self, file_content: FileContent, context: list[BlockContext]) -> tuple[Cursor, list[BlockContext]]:
+    def _find_cell_end(self, file_content: FileContent) -> Cursor:
         local_cursor = self.start.copy()
         local_cursor = local_cursor.advance_line(1)
+        local_regex = re.compile(f"^{self.delimiter}(\s|\n)?$")
+        while local_cursor < file_content:
+            line = file_content.get_line_content(local_cursor)
+            if local_regex.match(line):
+                log.debug(f"Matched Cell end: {line}")
+                return local_cursor
+            local_cursor = local_cursor.advance_line(1)
+
+        breakpoint()
+        raise RuntimeError(f"Failed to find end for cell {self}")
+
+    def _find_html_end(
+        self, file_content: FileContent, context: list[BlockContext]
+    ) -> Cursor:
+        raise NotImplementedError
+
+    def _find_codeblock_end(self, file_content: FileContent) -> Cursor:
+        local_cursor = self.start.copy()
+        local_cursor = local_cursor.advance_line(1)
+        local_regex = re.compile(f"^{self.delimiter}(\s|\n)?$")
         while local_cursor <= file_content:
             line = file_content.get_line_content(local_cursor)
-            if sr := CELL_END.search(line):
-                log.debug(f"Matched Cell end: {line}")
-                if not context[-1].block_type == BlockType.CELL:
-                    raise ValueError("Cell end without matching cell start")
-                context.pop()
-                return local_cursor, context
+            if local_regex.match(line):
+                log.debug(f"Matched Codeblock end: {line}")
+                return local_cursor
             local_cursor = local_cursor.advance_line(1)
-        raise NotImplementedError
+
+        raise RuntimeError("Codeblock end without matching codeblock start")
 
     def into_output_lines(self, file_content: FileContent) -> list[str]:
         if self.end == UnknownEnd:
             raise ValueError("BlockContext has no end")
 
-        
+        elif self.block_type == BlockType.CELL:
+            return self._into_output_lines_cell(file_content)
+
+        elif self.block_type == BlockType.CODEBLOCK:
+            return self._into_output_lines_codeblock(file_content)
+
+        elif self.block_type == BlockType.HTML:
+            return self._into_output_lines_html(file_content)
 
         raise NotImplementedError
+
+    def _into_output_lines_cell(self, file_content: FileContent) -> list[str]:
+        if isinstance(self.end, UnknownEnd):
+            raise ValueError(f"BlockContext {self} has no end")
+        out = []
+        out.append("\n\n")
+        out.extend(
+            file_content.get_lines_content(
+                self.start.advance_line(1), self.end.advance_line(-1)
+            )
+        )
+        out.append("\n\n")
+        return out
+
+    def _into_output_lines_codeblock(
+        self,
+        file_content: FileContent,
+        context: list[BlockContext],
+    ) -> list[str]:
+        out = []
+        out.append("\n\n")
+
+        tmp = self.find_inner_block(file_content, context=context)
+        if tmp is not None:
+            out.extend(tmp.into_output_lines(file_content))
+        else:
+            out.extend(
+                file_content.get_lines_content(
+                    self.start.advance_line(1), self.end.advance_line(-1)
+                )
+            )
+
+        out.append("\n\n")
+        return out
 
 
 @dataclass
@@ -176,47 +296,23 @@ class AdmotionCellDataPreprocessor(Preprocessor):
     def run(self, lines):
         log.info(f"Running {self}")
         file_content = FileContent(lines)
-        nesting_state = []
+        context = []
         outs = []
 
         cursor = Cursor(0, 0)
-        while cursor <= file_content:
-            line = file_content.get_line_content(cursor)
-            # Check if it starts anything
-            # If so, find the end of the block
-            #     process the block
-            #     add to outs
-            # If not process the line
+        while cursor < file_content:
+            tmp = BlockContext.try_from_line(file_content, cursor, context=context)
+            if tmp is not None:
+                cursor = tmp.find_end(file_content, context)
+                outs.extend(tmp.with_end(cursor).into_output_lines(file_content))
+                context.append(tmp)
 
-        outs = [self._process_line(x) for x in lines]
-        log.debug(f"Removing {sum(1 for x in outs if x is None)} lines")
-        out = [x for x in outs if x is not None]
+            else:
+                line = file_content.get_line_content(cursor)
+                outs.append(line)
+                cursor = cursor.advance_line(1)
 
-        return out
-
-    def _process_line(self, line):
-        else:
-            out = line
-
-        if line != out:
-            log.debug(f"Transformed {line} -> {out}")
-        return out
-
-    def process_cell(self, lines):
-        pass
-
-    def process_codeblock(self, lines):
-        pass
-
-    def find_closing_html(self, lines, start, tag: str):
-        pass
-
-    def process_html(self, context: HTMLContext, parents: list[BlockContext]):
-        pass
-
-
-# TODO consider implemeting this ...
-# class CellBLockProcessor(BlockProcessor):
+        return outs
 
 
 class QuartoCellDataExtension(Extension):
@@ -229,7 +325,7 @@ class QuartoCellDataExtension(Extension):
         md.registerExtension(self)
         md.preprocessors.register(
             AdmotionCellDataPreprocessor(),
-            name="QuatoCellData",
+            name="QuartoCellData",
             priority=106,  # Right before Admonition
         )
         md.parser.blockprocessors.register(
