@@ -1,0 +1,12 @@
+# This is a file
+
+
+```{r}
+data <- data.frame(a = 1:5, b = 1:5)
+data
+```
+
+
+```{r}
+print(data)
+```

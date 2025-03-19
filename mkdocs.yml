@@ -5,22 +5,29 @@ site_author: J. Sebastian Paez
 
 repo_url: https://github.com/jspaezp/mkquartodocs
 
-theme:
-  name: material
 
 nav:
   - Home: README.md
   - Examples:
-    - 'Simple python execution': 'examples/example.md'
+    - 'Simple python execution': 'examples/example.qmd'
+    - 'Simple dataframe execution': 'examples/dataframe_example.qmd'
+    - 'Simple mermaid execution': 'examples/mermaid_example.qmd'
+    - 'Simple matplotlib execution': 'examples/matplotlib_example.qmd'
+
+theme:
+  name: material
 
 plugins:
   - search
-  - mkdocstrings
-  - mkquartodocs
+  - mkquartodocs:
+      # keep_output: true
+      force_rebuild: true
 
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
   - pymdownx.superfences
+
+extra_javascript:
+  - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
+  - javascripts/tablesort.js

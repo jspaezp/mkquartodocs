@@ -1,4 +1,15 @@
 ---
+biblio-config: true
+labels:
+  abstract: Abstract
+  affiliations: Affiliations
+  authors: Authors
+  description: Description
+  doi: Doi
+  keywords: Keywords
+  modified: Modified
+  published: Published
+  related_formats: Other Formats
 toc-title: Table of contents
 ---
 
@@ -95,8 +106,12 @@ Available configuration options:
 -   **quarto_path**: Specifies where to look for the quarto executable.
 -   **keep_output**: If true it will skip the cleanup step in the
     directory.
--   **ignore**: a python regular expressions that if matched will mark
-    the file to not be rendered. Note that they need to be full matches
+-   **ignore_pattern**: a python regular expressions that if matched
+    will mark the file to not be rendered. Note that they need to be
+    full matches
+-   **force_rebuild**: If true it will force a rebuild of the quarto
+    documents (instead of trying to skip the document if the .md already
+    exists)
 
 ``` yaml
 # Whatever is in your mkdocs.yml configuration file....
@@ -107,6 +122,28 @@ plugins:
       quarto_path: /home/my_folder/some/weird/place/to/have/executables/quarto
       keep_output: true
       ignore: (.*broken.*.qmd)|(.*page[0-9].qmd)
+
+# mkquartodocs will try to render every quarto document in the
+# docs directory, you can specify the page names using either the .qmd
+# or the .md extension
+
+nav:
+  - Home: README.md
+  - Examples:
+    - 'Simple python execution': 'examples/example.qmd'
+    - 'Simple dataframe execution': 'examples/dataframe_example.qmd'
+    - 'Simple mermaid execution': 'examples/mermaid_example.qmd'
+    - 'Simple matplotlib execution': 'examples/matplotlib_example.qmd'
+
+
+# These are also required depending on what features you want enabled.
+theme:
+  name: material
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
 ```
 
 ## Running

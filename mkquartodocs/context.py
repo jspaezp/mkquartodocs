@@ -1,10 +1,15 @@
 from pathlib import Path
-from shutil import copytree
+from shutil import copytree, copy2
 from tempfile import TemporaryDirectory
 
 from .logging import get_logger
 
 log = get_logger(__name__)
+
+
+def _log_n_copy(src, dst):
+    log.debug(f"Copying {src} to {dst}")
+    copy2(src, dst)
 
 
 class DirWatcherContext:
@@ -87,10 +92,15 @@ class CloneDir(TemporaryDirectory):
             dir=out_dir,
             ignore_cleanup_errors=ignore_cleanup_errors,
         )
-        copytree(str(self.path), self.name, dirs_exist_ok=True)
+        log.debug(f"Cloning {self.path} to {self.name}")
+        copytree(
+            str(self.path),
+            self.name,
+            dirs_exist_ok=True,
+            copy_function=_log_n_copy,
+        )
 
     def __enter__(self):
-        log.debug(f"Cloning {self.path} to {self.name}")
         return super().__enter__()
 
     def cleanup(self):
