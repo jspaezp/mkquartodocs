@@ -90,6 +90,9 @@ class FileContent:
     def get_lines_content(self, start: Cursor, end: Cursor) -> list[str]:
         # TODO ... this is an off-by 1 error nightmare ...
         # Some unit testing might be really worth it ...
+        if start == end:
+            return []
+
         if start.line == end.line:
             return [self._trim_line(self.lines[start.line], start=start, end=end)]
 
@@ -311,7 +314,6 @@ class BlockContext:
         if isinstance(self.end, UnknownEnd):
             raise ValueError(f"BlockContext {self} has no end")
         out = []
-        out.append("\n\n")
         last_end = self.start.advance_line(1)
         tmp = self.find_inner_block(file_content, context=[], start=last_end)
         while tmp is not None:
@@ -323,7 +325,6 @@ class BlockContext:
             tmp = self.find_inner_block(file_content, context=[], start=last_end)
 
         out.extend(file_content.get_lines_content(last_end, self.end.advance_line(-1)))
-        out.append("\n\n")
 
         return out
 
@@ -341,7 +342,7 @@ class BlockContext:
             )
 
         out.append(admon_candidates[0])
-        out.append("\n")
+        out.append("")
 
         internal = []
         last_end = self.start.advance_line(1)
@@ -376,7 +377,7 @@ class BlockContext:
             file_content.get_lines_content(last_end, self.end.advance_line(0))
         )
         out.extend([" " * 4 + line for line in internal])
-        out.append("\n\n")
+        out.append("")
 
         return out
 
@@ -387,7 +388,6 @@ class BlockContext:
         if isinstance(self.end, UnknownEnd):
             raise ValueError(f"BlockContext {self} has no end")
         out = []
-        out.append("\n\n")
         language = ""
         if self.attributes:
             language = self.attributes[0]
@@ -403,7 +403,6 @@ class BlockContext:
 
         out.extend(file_content.get_lines_content(last_end, self.end.advance_line(0)))
         out.append(f"{self.delimiter}")
-        out.append("\n\n")
         return out
 
 
