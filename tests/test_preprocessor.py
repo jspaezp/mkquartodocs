@@ -6,6 +6,8 @@ import pytest
 sample_cell_elements = [
     ':::: {.cell execution_count="1"}',
     "::: {.cell-output .cell-output-stdout}",
+    "::: ",
+    ":::: ",
     ':::: {.cell execution_count="3"}',
     "``` {.python .cell-code}",
     "```",
