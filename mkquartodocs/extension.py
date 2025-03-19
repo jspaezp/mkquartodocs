@@ -441,7 +441,9 @@ class AdmotionCellDataPreprocessor(Preprocessor):
 
 
 class QuartoCellDataExtension(Extension):
-    def extendMarkdown(self, md: Markdown) -> None:  # noqa: N802 (casing: parent method's name)
+    def extendMarkdown(
+        self, md: Markdown
+    ) -> None:  # noqa: N802 (casing: parent method's name)
         """Register the extension.
 
         Adds an instance of the Processor to the Markdown instance.
