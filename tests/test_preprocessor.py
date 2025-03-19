@@ -32,14 +32,18 @@ warnings.warn("This is a warning")
 """
 
 EXAMPLE_OUTPUT_FILE = """
-``` {.python .cell-code}
+```python
 import warnings
 warnings.warn("This is a warning")
+
 ```
 
-!!! warning "stderr"
-    ... UserWarning: This is a warning
-      warnings.warn("This is a warning")
+
+
+???+ warning "stderr"
+
+        ... UserWarning: This is a warning
+          warnings.warn("This is a warning")
 """
 
 
@@ -49,24 +53,14 @@ def test_conversion():
     # Right now I write a lot of ... unnecessary
     # newlines to be safe but I could trim it ...
     assert out == [
-        "\n\n",
-        "",
         '???+ note "output"',
-        "\n",
-        "    ",
-        "\n\n",
         "",
-        "\n\n",
         "",
-        "\n\n",
         "",
-        "\n\n",
+        "",
         "```python",
-        "",
         "```",
-        "\n\n",
         "",
-        "\n\n",
         "",
     ]
 
