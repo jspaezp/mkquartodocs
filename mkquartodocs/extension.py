@@ -36,7 +36,8 @@ CELL_ELEM_REGEX: Final = re.compile(
 # `::::: cell-output-display`
 CELL_ELEM_ALT_REGEX: Final = re.compile(r"^(:{3,})\s*(cell-output-display\s*)$")
 
-CODEBLOCK_REGEX: Final = re.compile(r"^(`{3,}){\.(\w+) .*}")
+# ``` {.python .cell-code}
+CODEBLOCK_REGEX: Final = re.compile(r"^(`{3,})\s?{\.(\w+) .*}")
 
 # https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
 # ???+ means a collapsable block rendered open by default
@@ -255,7 +256,7 @@ class BlockContext:
         local_cursor = self.start.copy()
         local_cursor = local_cursor.advance_line(1)
 
-        local_regex = re.compile(f"^{self.delimiter}(\s|\n)?$")
+        local_regex = re.compile(rf"^{self.delimiter}(\s|\n)?$")
         while local_cursor < file_content:
             line = file_content.get_line_content(local_cursor)
             if local_regex.match(line):
@@ -382,23 +383,26 @@ class BlockContext:
     def _into_output_lines_codeblock(
         self,
         file_content: FileContent,
-        context: list[BlockContext],
     ) -> list[str]:
         if isinstance(self.end, UnknownEnd):
             raise ValueError(f"BlockContext {self} has no end")
         out = []
         out.append("\n\n")
+        language = ""
+        if self.attributes:
+            language = self.attributes[0]
+        out.append(f"{self.delimiter}{language}")
 
         last_end = self.start.advance_line(1)
-        tmp = self.find_inner_block(file_content, context=context, start=last_end)
+        tmp = self.find_inner_block(file_content, context=[], start=last_end)
         while tmp is not None:
             out.extend(file_content.get_lines_content(last_end, tmp.start))
             out.extend(tmp.into_output_lines(file_content))
             last_end = tmp.end
-            tmp = self.find_inner_block(file_content, context=context, start=last_end)
+            tmp = self.find_inner_block(file_content, context=[], start=last_end)
 
-        out.extend(file_content.get_lines_content(last_end, self.end.advance_line(-1)))
-
+        out.extend(file_content.get_lines_content(last_end, self.end.advance_line(0)))
+        out.append(f"{self.delimiter}")
         out.append("\n\n")
         return out
 
@@ -442,7 +446,8 @@ class AdmotionCellDataPreprocessor(Preprocessor):
 
 class QuartoCellDataExtension(Extension):
     def extendMarkdown(
-        self, md: Markdown
+        self,
+        md: Markdown,
     ) -> None:  # noqa: N802 (casing: parent method's name)
         """Register the extension.
 

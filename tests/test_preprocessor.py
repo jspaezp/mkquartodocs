@@ -46,13 +46,28 @@ warnings.warn("This is a warning")
 def test_conversion():
     preprocessor = AdmotionCellDataPreprocessor()
     out = preprocessor.run(sample_cell_elements)
+    # Right now I write a lot of ... unnecessary
+    # newlines to be safe but I could trim it ...
     assert out == [
         "\n\n",
-        '!!! note "output"',
+        "",
+        '???+ note "output"',
+        "\n",
+        "    ",
         "\n\n",
-        "``` {.python .cell-code}",
+        "",
+        "\n\n",
+        "",
+        "\n\n",
+        "",
+        "\n\n",
+        "```python",
+        "",
         "```",
         "\n\n",
+        "",
+        "\n\n",
+        "",
     ]
 
 
