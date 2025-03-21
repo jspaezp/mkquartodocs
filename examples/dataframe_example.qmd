@@ -1,0 +1,28 @@
+
+# This is an example with a dataframe
+
+Lets check the contents of this file!
+
+```{python}
+with open("dataframe_example.qmd", "r") as f:
+    for l in f:
+        print(str(l).strip())
+
+```
+
+
+```{python}
+import pandas as pd
+
+pd.DataFrame([
+  range(10),
+  range(10, 20),
+])
+```
+
+
+```{python}
+# Fizz buzz as a simple list comprehension
+out = ["Fizz"*(i%3==0)+"Buzz"*(i%5==0) or str(i) for i in range(1, 101)]
+print(out)
+```
