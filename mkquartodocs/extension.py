@@ -24,7 +24,7 @@ log = get_logger(__name__)
 
 # `:::: {.cell execution_count="1"}`
 # `:::::: {.cell layout-align="default"}` <-  happens in mermaid diagrams
-CELL_REGEX: Final = re.compile(r"^(:{3,}) \{(#[-\w_]+)?\s*\.cell .*}\s*$")
+CELL_REGEX: Final = re.compile(r"^(:{3,}) \{(#[-\w_]+)?\.cell .*}\s*$")
 CELL_END: Final = re.compile(r"^(:{3,})$")
 
 # In theory it would be a 'cell-output' but there are other kinds of out
@@ -380,8 +380,16 @@ class BlockContext:
             # markdown in html attribute and leave as is.
             non_empty = [line for line in internal if line.strip()]
             if internal[0].startswith("<div>") and non_empty[-1].endswith("</div>"):
+                print("FOO")
+                print(self.label)
                 if "style" in internal[1]:
-                    internal[0] = '<div markdown="block">'
+                    if self.label:
+                        internal[0] = f'<div markdown="block" id="{self.label}">'
+                    else:
+                        internal[0] = '<div markdown="block">'
+                else:
+                    if self.label:
+                        internal[0] = f'<div id="{self.label}">'
 
                 last_end = self.end
 
