@@ -175,7 +175,7 @@ class BlockContext:
             label = grp[1][1:]
             first_cell_grp = 2
         return BlockContext(
-            block_type=BlockType.CELL,
+            block_type=BlockType.CELL_ELEM,
             delimiter=grp[0],
             attributes=grp[first_cell_grp:],
             start=Cursor(line=line_number, col=0),
