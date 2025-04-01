@@ -24,14 +24,14 @@ log = get_logger(__name__)
 
 # `:::: {.cell execution_count="1"}`
 # `:::::: {.cell layout-align="default"}` <-  happens in mermaid diagrams
-CELL_REGEX: Final = re.compile(r"^(:{3,}) \{\.cell .*}\s*$")
+CELL_REGEX: Final = re.compile(r"^(:{3,}) \{(?:#\w+\s+)?\.cell .*}\s*$")
 CELL_END: Final = re.compile(r"^(:{3,})$")
 
 # In theory it would be a 'cell-output' but there are other kinds of out
 # Cells contain multiple cell elements.
 # `::: {.cell-output .cell-output-stdout}`
 CELL_ELEM_REGEX: Final = re.compile(
-    r"^(:{3,}) \{(.cell-\w+)\s?(\.cell-[\w-]+)?( execution_count=\"\d+\")?\}$"
+    r"^(:{3,}) \{(?:#[-\w_]+\s+)?(.cell-\w+)\s?(\.cell-[\w-]+)?( execution_count=\"\d+\")?\}$"
 )
 # `::::: cell-output-display`
 CELL_ELEM_ALT_REGEX: Final = re.compile(r"^(:{3,})\s*(cell-output-display\s*)$")
@@ -136,6 +136,7 @@ class BlockContext:
     attributes: list[str]
     start: Cursor
     end: Cursor | UnknownEnd
+    label: str | None = None
 
     def __post_init__(self):
         log.info(f"BlockContext: {self}")
@@ -149,12 +150,18 @@ class BlockContext:
         sr = CELL_REGEX.search(line)
         grp = sr.groups()
         assert all(w == ":" for w in grp[0]), f"{grp[0]} should be :"
+        first_cell_grp = 0
+        label = None
+        if grp[0].startswith("#"):
+            label = grp[0][1:]
+            first_cell_grp = 1
         return BlockContext(
             block_type=BlockType.CELL,
             delimiter=grp[0],
-            attributes=grp[1:],
+            attributes=grp[first_cell_grp:],
             start=Cursor(line=line_number, col=0),
             end=UnknownEnd(),
+            label=label,
         )
 
     @classmethod
@@ -162,12 +169,18 @@ class BlockContext:
         """This function assumes that you already checked that the line matches CELL_ELEM_REGEX"""
         sr = CELL_ELEM_REGEX.search(line)
         grp = sr.groups()
+        first_cell_grp = 0
+        label = None
+        if grp[0].startswith("#"):
+            label = grp[0][1:]
+            first_cell_grp = 1
         return BlockContext(
-            block_type=BlockType.CELL_ELEM,
+            block_type=BlockType.CELL,
             delimiter=grp[0],
-            attributes=grp[1:],
+            attributes=grp[first_cell_grp:],
             start=Cursor(line=line_number, col=0),
             end=UnknownEnd(),
+            label=label,
         )
 
     @classmethod
