@@ -116,6 +116,7 @@ class MkQuartoDocsPlugin(BasePlugin):
         self.exit_action = _delete_file if not self.config["keep_output"] else None
 
         self.extension = QuartoCellDataExtension()
+        self.extension.update_ignore_patterns(self.ignores)
         config["markdown_extensions"].append(self.extension)
         return config
 
@@ -165,3 +166,13 @@ class MkQuartoDocsPlugin(BasePlugin):
     def on_post_build(self, config):
         log.info("Cleaning up:")
         self.dir_context.exit(update=False)
+
+    def on_page_markdown(self, markdown, page, config, files):
+        if hasattr(self, "extension"):
+            src_path = page.file.src_path.replace("\\", "/")
+            candidates = [src_path]
+            candidates.append(f"docs/{src_path}")
+            if page.file.abs_src_path:
+                candidates.append(str(page.file.abs_src_path))
+            self.extension.set_current_page(*candidates)
+        return markdown
