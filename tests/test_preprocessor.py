@@ -115,3 +115,34 @@ def test_conversion_file(document):
         else:
             msg += ", For extra information set MKQUARTODOCS_TEST_DEBUG_OUT_DIR=1"
         raise AssertionError(msg)
+
+
+def test_issue69_mkdocstrings_syntax():
+    """Test that mkdocstrings syntax (::: prefix) is allowed.
+
+    This is issue #69: https://github.com/jspaezp/mkquartodocs/issues/69
+    The preprocessor should allow mkdocstrings syntax (which doesn't match
+    Quarto cell patterns) to pass through unchanged.
+    """
+    preprocessor = AdmotionCellDataPreprocessor()
+
+    # Markdown with mkdocstrings syntax
+    mkdocstrings_input = [
+        "# API Documentation",
+        "",
+        "::: foo.main.hello",
+        "",
+        "This uses mkdocstrings syntax.",
+        "",
+        "::: another.module.function",
+    ]
+
+    # This should NOT raise an error - mkdocstrings syntax should pass through
+    output = preprocessor.run(mkdocstrings_input)
+
+    # The mkdocstrings lines should be preserved unchanged
+    assert "::: foo.main.hello" in output
+    assert "::: another.module.function" in output
+
+    # Verify the output structure is preserved
+    assert len([line for line in output if line.startswith(":::")]) == 2

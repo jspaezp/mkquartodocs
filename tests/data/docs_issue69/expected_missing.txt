@@ -1,0 +1,2 @@
+# The example.md generated from example.qmd should be cleaned up
+./docs/example.md

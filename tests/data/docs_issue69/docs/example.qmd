@@ -1,0 +1,11 @@
+---
+title: Example Quarto Document
+---
+
+# Example
+
+This is a simple quarto document.
+
+```{python}
+print("Hello from Quarto!")
+```

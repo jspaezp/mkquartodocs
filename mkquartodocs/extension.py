@@ -434,12 +434,21 @@ class AdmotionCellDataPreprocessor(Preprocessor):
                 cursor = cursor.advance_line(1)
 
         if any(x.startswith(":::") for x in outs):
-            # the ':::' is used in quarto to denote blocks but also used in
-            # mkdocstrings as a special 'domain-specific-syntax' ... so we need
-            # to remove them .... it also points to a bug in the preprocessor
-            # that let them go through ...
-            bads = [x for x in outs if x.startswith(":::")]
-            raise ValueError(f"Cell data contains admonition: {bads}")
+            # Check if these are unprocessed Quarto cell blocks (which would be a bug)
+            # vs. mkdocstrings syntax or other valid uses of ::: (which should be allowed)
+            potential_bugs = []
+            for x in outs:
+                if x.startswith(":::"):
+                    # Check if it looks like Quarto cell syntax that escaped processing
+                    if (
+                        CELL_REGEX.match(x)
+                        or CELL_ELEM_REGEX.match(x)
+                        or CELL_ELEM_ALT_REGEX.match(x)
+                    ):
+                        potential_bugs.append(x)
+
+            if potential_bugs:
+                raise ValueError(f"Unprocessed Quarto cell syntax found: {potential_bugs}")
         return outs
 
 
