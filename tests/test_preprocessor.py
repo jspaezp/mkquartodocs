@@ -1,4 +1,6 @@
-from mkquartodocs.extension import AdmotionCellDataPreprocessor
+import re
+
+from mkquartodocs.extension import AdmotionCellDataPreprocessor, QuartoCellDataExtension
 import os
 from pathlib import Path
 import pytest
@@ -115,3 +117,14 @@ def test_conversion_file(document):
         else:
             msg += ", For extra information set MKQUARTODOCS_TEST_DEBUG_OUT_DIR=1"
         raise AssertionError(msg)
+
+
+def test_preprocessor_respects_ignore_patterns():
+    extension = QuartoCellDataExtension()
+    extension.update_ignore_patterns([re.compile(r"docs/index\.md")])
+    extension.set_current_page("index.md", "docs/index.md")
+    preprocessor = AdmotionCellDataPreprocessor(extension=extension)
+    lines = ["::: foo.main.hello"]
+
+    out = preprocessor.run(lines)
+    assert out == lines

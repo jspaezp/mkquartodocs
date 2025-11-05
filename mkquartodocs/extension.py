@@ -414,7 +414,14 @@ class HTMLContext:
 
 
 class AdmotionCellDataPreprocessor(Preprocessor):
+    def __init__(self, md: Markdown | None = None, extension: QuartoCellDataExtension | None = None):
+        super().__init__(md)
+        self.extension = extension
+
     def run(self, lines):
+        if self.extension and self.extension.should_ignore_current_page():
+            log.debug("Skipping admonition preprocessor for ignored page")
+            return lines
         log.info(f"Running {self}")
         file_content = FileContent(lines)
         context = []
@@ -444,6 +451,28 @@ class AdmotionCellDataPreprocessor(Preprocessor):
 
 
 class QuartoCellDataExtension(Extension):
+    def __init__(self):
+        super().__init__()
+        self._ignore_patterns: list[re.Pattern[str]] = []
+        self._current_page_candidates: tuple[str, ...] = ()
+
+    def update_ignore_patterns(self, patterns: list[re.Pattern[str]]) -> None:
+        self._ignore_patterns = patterns
+
+    def set_current_page(self, *candidates: str) -> None:
+        self._current_page_candidates = tuple(filter(None, candidates))
+
+    def should_ignore_current_page(self) -> bool:
+        if not self._ignore_patterns or not self._current_page_candidates:
+            return False
+
+        for candidate in self._current_page_candidates:
+            for pattern in self._ignore_patterns:
+                if pattern.fullmatch(candidate):
+                    log.debug("Ignoring page %s due to pattern %s", candidate, pattern)
+                    return True
+        return False
+
     def extendMarkdown(
         self,
         md: Markdown,
@@ -456,7 +485,7 @@ class QuartoCellDataExtension(Extension):
 
         md.registerExtension(self)
         md.preprocessors.register(
-            AdmotionCellDataPreprocessor(),
+            AdmotionCellDataPreprocessor(md, extension=self),
             name="QuartoCellData",
             priority=106,  # Right before Admonition
         )
