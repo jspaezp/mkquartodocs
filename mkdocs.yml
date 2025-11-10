@@ -13,21 +13,24 @@ nav:
     - 'Simple dataframe execution': 'examples/dataframe_example.qmd'
     - 'Simple mermaid execution': 'examples/mermaid_example.qmd'
     - 'Simple matplotlib execution': 'examples/matplotlib_example.qmd'
+    - 'Mkdocstrings Integration': 'examples/mkdocstrings_example.qmd'
 
 theme:
   name: material
 
 plugins:
-  - search
-  - mkquartodocs:
-      # keep_output: true
-      force_rebuild: true
+- mkdocstrings:
+    default_handler: python
+- search
+- mkquartodocs:
+    # keep_output: true
+    force_rebuild: true
 
 markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.superfences
+- pymdownx.highlight:
+    anchor_linenums: true
+- pymdownx.superfences
 
 extra_javascript:
-  - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
-  - javascripts/tablesort.js
+- https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
+- javascripts/tablesort.js

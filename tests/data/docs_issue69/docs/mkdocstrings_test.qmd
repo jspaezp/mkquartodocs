@@ -1,0 +1,18 @@
+---
+title: mkdocstrings Integration Test
+---
+
+# mkdocstrings in Quarto
+
+This tests that mkdocstrings syntax works correctly within a Quarto document.
+
+## Python math.sqrt documentation
+
+::: math.sqrt
+
+## Example usage
+
+```{python}
+import math
+print(f"Square root of 16: {math.sqrt(16)}")
+```

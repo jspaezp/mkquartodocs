@@ -24,8 +24,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 import logging
 from typing import Any, MutableMapping, Tuple
 
-from mkdocs.utils import warning_filter
-
 
 class LoggerAdapter(logging.LoggerAdapter):
     """A logger adapter to prefix messages."""
@@ -63,5 +61,4 @@ def get_logger(name: str) -> LoggerAdapter:
         A logger configured to work well in MkDocs.
     """
     logger = logging.getLogger(f"mkdocs.plugins.{name}")
-    logger.addFilter(warning_filter)
     return LoggerAdapter(name.split(".", 1)[0], logger)
