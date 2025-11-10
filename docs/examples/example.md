@@ -253,12 +253,12 @@ raise NotImplementedError
 ```
 
 ::: {.cell-output .cell-output-error}
-    NotImplementedError: 
+    NotImplementedError:
     [0;31m---------------------------------------------------------------------------[0m
     [0;31mNotImplementedError[0m                       Traceback (most recent call last)
     Cell [0;32mIn[24], line 1[0m
     [0;32m----> 1[0m [38;5;28;01mraise[39;00m [38;5;167;01mNotImplementedError[39;00m
 
-    [0;31mNotImplementedError[0m: 
+    [0;31mNotImplementedError[0m:
 :::
 ::::

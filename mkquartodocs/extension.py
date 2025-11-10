@@ -39,6 +39,18 @@ CELL_ELEM_ALT_REGEX: Final = re.compile(r"^(:{3,})\s*(cell-output-display\s*)$")
 # ``` {.python .cell-code}
 CODEBLOCK_REGEX: Final = re.compile(r"^(`{3,})\s?{\.(\w+) .*}")
 
+# mkdocstrings syntax normalization:
+# Quarto wraps markdown divs (including mkdocstrings `::: module.path` syntax)
+# in extra colons when rendering nested structures. For example:
+#   Source .qmd: `::: pathlib.Path`
+#   Quarto output: `::::: pathlib.Path` (5 colons instead of 3)
+# mkdocstrings expects exactly 3 colons, so we need to normalize any colon-fences
+# that don't match Quarto cell patterns back to 3 colons.
+# This regex matches lines with 3+ colons that aren't Quarto cell syntax:
+# - Matches: `::::: module.path` (mkdocstrings), `:::::` (closing fence)
+# - Doesn't match: `:::: {.cell ...}` (has braces), handled by other regexes
+MKDOCSTRINGS_NORMALIZE_REGEX: Final = re.compile(r"^(:{3,})(\s+(?!{).*)?$")
+
 # https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
 # ???+ means a collapsable block rendered open by default
 TYPE_MAPPING: Final = {
@@ -71,11 +83,7 @@ class FileContent:
     lines: list[str]
 
     def get_line_content(self, cursor: Cursor) -> str:
-        try:
-            line = self.lines[cursor.line]
-        except IndexError:
-            breakpoint()
-        # Return line content from the cursor column
+        line = self.lines[cursor.line]
         return line[cursor.col :]
 
     def _trim_line(
@@ -138,7 +146,7 @@ class BlockContext:
     end: Cursor | UnknownEnd
 
     def __post_init__(self):
-        log.info(f"BlockContext: {self}")
+        log.debug(f"BlockContext: {self}")
 
     def get_content(self, file_content: FileContent) -> str:
         return file_content.get_lines_content(self.start, self.end)
@@ -430,6 +438,20 @@ class AdmotionCellDataPreprocessor(Preprocessor):
 
             else:
                 line = file_content.get_line_content(cursor)
+                # Normalize mkdocstrings syntax that Quarto wrapped in extra colons
+                # This only affects lines that didn't match any Quarto block patterns
+                if match := MKDOCSTRINGS_NORMALIZE_REGEX.match(line):
+                    # Double-check this isn't a Quarto pattern (shouldn't be, but be safe)
+                    if not (
+                        CELL_REGEX.match(line)
+                        or CELL_ELEM_REGEX.match(line)
+                        or CELL_ELEM_ALT_REGEX.match(line)
+                    ):
+                        rest = match.group(2) or ""
+                        line = ":::" + rest
+                        log.debug(
+                            f"Normalized mkdocstrings: {match.group(0).strip()!r} -> {line.strip()!r}"
+                        )
                 outs.append(line)
                 cursor = cursor.advance_line(1)
 
@@ -448,7 +470,9 @@ class AdmotionCellDataPreprocessor(Preprocessor):
                         potential_bugs.append(x)
 
             if potential_bugs:
-                raise ValueError(f"Unprocessed Quarto cell syntax found: {potential_bugs}")
+                raise ValueError(
+                    f"Unprocessed Quarto cell syntax found: {potential_bugs}"
+                )
         return outs
 
 

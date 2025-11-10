@@ -1,0 +1,18 @@
+
+# This is a simple example that uses mkdocstrings
+
+You can take a look at the .qmd that generated this docs
+from:
+
+[https://github.com/jspaezp/mkquartodocs/tree/main/docs](https://github.com/jspaezp/mkquartodocs/tree/main/docs)
+
+## Docs for math.sqrt
+
+::: math.sqrt
+
+```{python}
+import math
+
+print(f"The quare root of 16 is {math.sqrt(16)}")
+
+```
