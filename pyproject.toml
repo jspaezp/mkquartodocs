@@ -1,6 +1,6 @@
 [project]
 name = "mkquartodocs"
-version = "0.6.0"
+version = "0.7.0"
 description = ""
 authors = [
   { name = "J. Sebastian Paez", email = "jspaezp@users.noreply.github.com" },
