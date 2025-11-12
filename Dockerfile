@@ -57,6 +57,7 @@ COPY requirements.txt /tmp/requirements.txt
 RUN --mount=type=cache,target=/root/.cache/uv \
     grep -v '^-e' /tmp/requirements.txt > /tmp/requirements-filtered.txt && \
     uv venv /opt/venv --python ${PYTHON_VERSION} && \
+    uv pip install --python /opt/venv pip && \
     uv pip install --python /opt/venv -r /tmp/requirements-filtered.txt
 
 # Activate the virtual environment

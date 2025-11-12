@@ -106,8 +106,11 @@ jobs:
               Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
               sleep 2
 
-              # Run tests with timeout
-              timeout 30m uv run --all-groups python -m pytest -xs --cov . --cov-report=xml --timeout=300
+              # Install project in editable mode without dependencies (deps already in container)
+              python -m pip install -e . --no-deps
+
+              # Run tests with timeout using container's Python
+              timeout 30m python -m pytest -xs --cov . --cov-report=xml --timeout=300
             "
         timeout-minutes: 35
 
@@ -122,7 +125,12 @@ jobs:
             bash -c "
               Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
               sleep 2
-              timeout 10m uv run --all-groups python -m mkdocs build --strict
+
+              # Install project in editable mode without dependencies (deps already in container)
+              python -m pip install -e . --no-deps
+
+              # Build docs using container's Python
+              timeout 10m python -m mkdocs build --strict
             "
         timeout-minutes: 15
 
