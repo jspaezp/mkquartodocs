@@ -11,15 +11,16 @@ ARG PYTHON_VERSION=3.12
 ARG QUARTO_VERSION=1.9.10
 
 # Stage 1: Base image with Quarto and system dependencies
-FROM ghcr.io/quarto-dev/quarto:${QUARTO_VERSION} AS base
+# Using quarto-full which includes Chromium and all dependencies
+FROM ghcr.io/quarto-dev/quarto-full:${QUARTO_VERSION} AS base
 
-# Install system dependencies in a single layer
+# Install Python and Xvfb dependencies
+# quarto-full has better support for rendering, but we still need Xvfb for headless Chromium
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
     python3-venv \
-    chromium-browser \
     xvfb \
     curl \
     ca-certificates \
@@ -30,6 +31,7 @@ RUN apt-get update && \
 RUN ln -sf /usr/bin/python3 /usr/bin/python || true
 
 # Install Chromium for Quarto (for mermaid diagrams)
+# This downloads and installs Quarto's bundled Chromium
 # This is a heavy operation, so we do it in the base layer for caching
 RUN quarto install chromium --no-prompt
 
