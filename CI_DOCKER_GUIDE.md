@@ -18,7 +18,7 @@ The tests were timing out after 6 hours, consuming significant OSS resources.
 1. **Multi-stage Dockerfile** - Optimized for layer caching
 2. **Docker BuildKit caching** - Leverages GitHub Container Registry
 3. **Test timeout protection** - Prevents individual test hangs
-4. **Multi-version matrix** - Tests Python 3.10, 3.11, 3.12 with Quarto latest/1.4
+4. **Multi-version matrix** - Tests Python 3.10, 3.12 with Quarto 1.8.25, 1.9.9
 
 ### Caching Strategy
 
@@ -31,21 +31,33 @@ The Dockerfile is structured in stages to maximize cache hits:
 ```dockerfile
 # Stage 1: Base (rarely changes)
 - Quarto image
-- System packages (chromium, python)
+- System packages (chromium, python, xvfb)
 - Quarto chromium installation
 
-# Stage 2: Python environment (changes on uv updates)
+# Stage 2: Python environment (changes only when dependencies change)
 - uv installation
-- Common packages (jupyter, matplotlib, pandas, numpy)
-
-# Stage 3: Development (changes on dependency updates)
-- Project dependencies (from pyproject.toml)
-- Source code (changes most frequently)
+- Project dependencies (from requirements.txt)
 ```
 
-Each layer only rebuilds when its inputs change.
+**Key architectural decision**: Source code is NOT copied into the image. It's mounted at runtime via `-v` flag. This means:
+- Docker layers only rebuild when dependencies actually change
+- Code changes don't invalidate the Docker cache
+- Version bumps in pyproject.toml don't trigger rebuilds (only actual dependency changes do)
 
-#### 2. GitHub Container Registry Caching
+#### 2. External Dependency Resolution
+
+**IMPORTANT**: Dependencies are exported to `requirements.txt` BEFORE building the Docker image:
+
+```bash
+uv export --no-hashes --python ${PYTHON_VERSION} --all-groups > requirements.txt
+```
+
+This approach provides fine-grained cache invalidation:
+- Cache only invalidates when actual dependencies change
+- Version bumps in pyproject.toml (patch/minor/major) don't trigger rebuilds
+- More explicit and predictable than using pyproject.toml + uv.lock directly
+
+#### 3. GitHub Container Registry Caching
 
 The workflow uses `docker/build-push-action@v5` with:
 - `cache-from`: Pulls cached layers from GHCR
@@ -53,23 +65,23 @@ The workflow uses `docker/build-push-action@v5` with:
 
 Cache keys are based on:
 - Python version (e.g., `3.12`)
-- Quarto version (e.g., `latest`)
-- Dependency hash (`hashFiles('pyproject.toml', 'uv.lock')`)
+- Quarto version (e.g., `1.9.9`)
+- Dependency hash (`hashFiles('requirements.txt')`)
 
 This means:
 - First run: ~5-10 minutes (full build)
 - Subsequent runs with no changes: ~30 seconds (pure cache)
-- After dependency update: ~2-3 minutes (only rebuild affected layers)
-- After code change: ~10 seconds (only copy source)
+- After dependency update: ~2-3 minutes (only rebuild Python environment layer)
+- After code change: ~30 seconds (no rebuild needed - code is mounted at runtime)
 
-#### 3. Fallback Cache Keys
+#### 4. Fallback Cache Keys
 
 The workflow tries multiple cache keys in order:
-1. Exact match: `py3.12-quarto-latest-<hash>`
-2. Same versions, different hash: `py3.12-quarto-latest-`
+1. Exact match: `py3.12-quarto1.9.9-<requirements.txt hash>`
+2. Same versions, different dependencies: `py3.12-quarto1.9.9-`
 3. Same Python, any Quarto: `py3.12-`
 
-This ensures cache hits even when dependencies change.
+This ensures partial cache hits even when dependencies change.
 
 ### Resource Usage Comparison
 
@@ -88,30 +100,52 @@ This ensures cache hits even when dependencies change.
 
 ## Testing Locally
 
-To test the Docker setup locally:
+To test the Docker setup locally, you must first generate `requirements.txt`:
 
 ```bash
-# Build the image
+# Step 1: Generate requirements.txt for the Python version you want to test
+uv export --no-hashes --python 3.12 --all-groups > requirements.txt
+
+# Step 2: Build the image (with default Python 3.12 and Quarto 1.9.10)
 docker build -t mkquartodocs-test:local .
 
-# Run tests
-docker run --rm -v $(pwd):/work mkquartodocs-test:local
+# Or build with specific versions
+uv export --no-hashes --python 3.10 --all-groups > requirements.txt
+docker build -t mkquartodocs-test:local \
+  --build-arg PYTHON_VERSION=3.10 \
+  --build-arg QUARTO_VERSION=1.8.25 .
+
+# Step 3: Run tests
+docker run --rm \
+  -v $(pwd):/work \
+  -e DISPLAY=:99 \
+  --security-opt seccomp=unconfined \
+  mkquartodocs-test:local \
+  bash -c "Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 & sleep 2 && uv run --all-groups python -m pytest -xs --cov . --cov-report=xml"
 
 # Or run interactively
-docker run --rm -it -v $(pwd):/work mkquartodocs-test:local bash
+docker run --rm -it \
+  -v $(pwd):/work \
+  mkquartodocs-test:local bash
 ```
+
+**Important notes:**
+- You MUST generate `requirements.txt` before building the image
+- The `requirements.txt` should match the Python version specified in `--build-arg PYTHON_VERSION`
+- Source code is NOT baked into the image - it's mounted at runtime via `-v $(pwd):/work`
+- Changes to source code don't require rebuilding the image
 
 ## Workflow Configuration
 
 ### Matrix Strategy
 
 We test 4 combinations to balance coverage and resource usage:
-- Python 3.10 + Quarto latest
-- Python 3.11 + Quarto latest
-- Python 3.12 + Quarto latest
-- Python 3.12 + Quarto 1.4
+- Python 3.10 + Quarto 1.8.25
+- Python 3.10 + Quarto 1.9.9
+- Python 3.12 + Quarto 1.8.25
+- Python 3.12 + Quarto 1.9.9
 
-We exclude older Python × older Quarto combinations to reduce the matrix from 6 to 4 jobs.
+This tests both minimum and current Python versions (3.10, 3.12) against a stable Quarto version (1.8.25) and the latest (1.9.9).
 
 ### Timeout Protection
 
@@ -166,14 +200,23 @@ To migrate from the old CI:
 
 ## Maintenance
 
+### Updating Dependencies
+
+When you add or remove dependencies in `pyproject.toml`:
+
+1. The CI will automatically detect the change (via requirements.txt hash)
+2. Only the Python environment layer will rebuild (~2-3 minutes)
+3. No manual intervention needed
+
 ### Updating Base Image
 
 ```dockerfile
 # Pin to specific version for stability
-FROM ghcr.io/quarto-dev/quarto:1.4.0
+FROM ghcr.io/quarto-dev/quarto:1.9.9
 
-# Or use latest for newest features
-FROM ghcr.io/quarto-dev/quarto:latest
+# Or use version range
+ARG QUARTO_VERSION=1.9.10
+FROM ghcr.io/quarto-dev/quarto:${QUARTO_VERSION}
 ```
 
 ### Updating Python Versions

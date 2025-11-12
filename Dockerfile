@@ -1,5 +1,10 @@
 # Multi-stage Dockerfile for running mkquartodocs tests
 # Optimized for layer caching in CI environments
+#
+# Key design principles:
+# 1. Dependencies are installed from requirements.txt (exported externally by CI)
+# 2. Source code is NOT copied - it's mounted at runtime via -v flag
+# 3. Cache invalidation happens only when dependencies change, not on version bumps
 
 # Build argument for Python version
 ARG PYTHON_VERSION=3.12
@@ -15,6 +20,7 @@ RUN apt-get update && \
     python3-pip \
     python3-venv \
     chromium-browser \
+    xvfb \
     curl \
     ca-certificates \
     && apt-get clean \
@@ -27,7 +33,7 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python || true
 # This is a heavy operation, so we do it in the base layer for caching
 RUN quarto install chromium --no-prompt
 
-# Stage 2: Python environment with uv
+# Stage 2: Python environment with dependencies
 FROM base AS python-env
 
 ARG PYTHON_VERSION
@@ -36,24 +42,28 @@ ARG PYTHON_VERSION
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.local/bin:${PATH}"
 
-# Install common Python packages used in documentation
-# These rarely change, so we install them in a separate layer
-# Install dependencies
-# Note: We use --python to specify the Python version, and uv will install it if needed
-# We don't use --locked because different Python versions may have different lock requirements
+# Install Python dependencies from requirements.txt
+# This file is generated externally by the CI workflow using:
+#   uv export --no-hashes --python ${PYTHON_VERSION} --all-groups > requirements.txt
+#
+# Benefits of this approach:
+# - Cache only invalidates when actual dependencies change
+# - Version bumps in pyproject.toml don't trigger rebuilds
+# - More explicit control over what causes cache invalidation
+#
+# Note: We filter out the editable install line (-e .) since source code
+# will be mounted at runtime, not baked into the image
+COPY requirements.txt /tmp/requirements.txt
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --python ${PYTHON_VERSION} --no-install-project
+    grep -v '^-e' /tmp/requirements.txt > /tmp/requirements-filtered.txt && \
+    uv venv /opt/venv --python ${PYTHON_VERSION} && \
+    uv pip install --python /opt/venv -r /tmp/requirements-filtered.txt
 
-# Stage 3: Development image with project dependencies
-FROM python-env AS dev
+# Activate the virtual environment
+ENV PATH="/opt/venv/bin:${PATH}"
+ENV VIRTUAL_ENV="/opt/venv"
 
-# Copy dependency files first (for better caching)
-COPY pyproject.toml .
-COPY uv.lock . 
-COPY tests .
-COPY mkquartodocs .
+# Set working directory where code will be mounted
+WORKDIR /work
 
-# Default command
-CMD ["uv", "run", "--all-groups", "python", "-m", "pytest", "-xs", "--cov", ".", "--cov-report=xml"]
+# No CMD - command should be specified at runtime to match CI/local usage
