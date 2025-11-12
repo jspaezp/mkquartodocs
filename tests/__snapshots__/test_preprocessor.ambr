@@ -1,0 +1,136 @@
+# serializer version: 1
+# name: test_preprocessor_snapshot[cell_with_stderr][cell_with_stderr]
+  '''
+  ```python
+  import warnings
+  warnings.warn("This is a warning message")
+  
+  ```
+  
+  
+  
+  ???+ warning "stderr"
+  
+          UserWarning: This is a warning message
+            warnings.warn("This is a warning message")
+      
+  
+  
+  
+  '''
+# ---
+# name: test_preprocessor_snapshot[cell_with_stdout][cell_with_stdout]
+  '''
+  ```python
+  print("Hello, world!")
+  print("This is a test")
+  
+  ```
+  
+  
+  
+  ???+ note "output"
+  
+          Hello, world!
+          This is a test
+      
+  
+  
+  
+  '''
+# ---
+# name: test_preprocessor_snapshot[mkdocstrings_syntax][mkdocstrings_syntax]
+  '''
+  # API Documentation
+  
+  This page documents the main API.
+  
+  ::: pathlib.Path
+  
+  Some text between API references.
+  
+  ::: os.path.join
+  
+  More documentation here.
+  
+  ::: collections.defaultdict
+  '''
+# ---
+# name: test_preprocessor_snapshot[multiple_outputs][multiple_outputs]
+  '''
+  Some text before the cell.
+  
+  ```python
+  print("First output")
+  import warnings
+  warnings.warn("A warning")
+  print("Second output")
+  
+  ```
+  
+  
+  
+  ???+ note "output"
+  
+          First output
+      
+  
+  
+  
+  
+  ???+ warning "stderr"
+  
+          UserWarning: A warning
+      
+  
+  
+  
+  
+  ???+ note "output"
+  
+          Second output
+      
+  
+  
+  
+  
+  Some text after the cell.
+  '''
+# ---
+# name: test_preprocessor_snapshot[nested_cells][nested_cells]
+  '''
+  ```python
+  import pandas as pd
+  df = pd.DataFrame({'a': [1, 2, 3]})
+  print("Created dataframe")
+  df
+  
+  ```
+  
+  
+  
+  ???+ note "output"
+  
+          Created dataframe
+      
+  
+  
+  
+  
+  ???+ note "Display"
+  
+      <div>
+      <table>
+        <tr><td>a</td></tr>
+        <tr><td>1</td></tr>
+        <tr><td>2</td></tr>
+        <tr><td>3</td></tr>
+      </table>
+      </div>
+      
+      
+  
+  
+  
+  '''
+# ---

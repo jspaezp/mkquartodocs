@@ -1,0 +1,7 @@
+site_name: Issue69 Test
+plugins:
+  - mkquartodocs
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]

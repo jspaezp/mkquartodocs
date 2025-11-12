@@ -3,6 +3,14 @@ import os
 from pathlib import Path
 import pytest
 
+# Preprocessor snapshot tests
+PREPROCESSOR_SNAPSHOT_DIR = Path(__file__).parent / "preprocessor_snapshots"
+snapshot_test_cases = [
+    d
+    for d in PREPROCESSOR_SNAPSHOT_DIR.glob("*")
+    if d.is_dir() and (d / "input.md").exists()
+]
+
 sample_cell_elements = [
     ':::: {.cell execution_count="1"}',
     "::: {.cell-output .cell-output-stdout}",
@@ -115,3 +123,61 @@ def test_conversion_file(document):
         else:
             msg += ", For extra information set MKQUARTODOCS_TEST_DEBUG_OUT_DIR=1"
         raise AssertionError(msg)
+
+
+@pytest.mark.parametrize(
+    "test_case", snapshot_test_cases, ids=[t.name for t in snapshot_test_cases]
+)
+def test_preprocessor_snapshot(test_case: Path, snapshot):
+    """Snapshot test for preprocessor transformations.
+
+    Each test case directory contains:
+    - input.md: Raw Quarto-rendered markdown to be processed
+    - README.md: Documentation explaining what the test validates
+    - __snapshots__/: Auto-generated snapshots (created by syrupy)
+
+    To update snapshots after intentional changes:
+        pytest tests/test_preprocessor.py::test_preprocessor_snapshot --snapshot-update
+    """
+    input_file = test_case / "input.md"
+    assert input_file.exists(), f"Missing input.md in {test_case.name}"
+
+    # Read and process input
+    input_lines = input_file.read_text().splitlines()
+    preprocessor = AdmotionCellDataPreprocessor()
+    output_lines = preprocessor.run(input_lines)
+
+    # Snapshot the output as a single string
+    output_text = "\n".join(output_lines)
+    assert output_text == snapshot(name=test_case.name)
+
+
+def test_issue69_mkdocstrings_syntax():
+    """Test that mkdocstrings syntax (::: prefix) is allowed.
+
+    This is issue #69: https://github.com/jspaezp/mkquartodocs/issues/69
+    The preprocessor should allow mkdocstrings syntax (which doesn't match
+    Quarto cell patterns) to pass through unchanged.
+    """
+    preprocessor = AdmotionCellDataPreprocessor()
+
+    # Markdown with mkdocstrings syntax
+    mkdocstrings_input = [
+        "# API Documentation",
+        "",
+        "::: foo.main.hello",
+        "",
+        "This uses mkdocstrings syntax.",
+        "",
+        "::: another.module.function",
+    ]
+
+    # This should NOT raise an error - mkdocstrings syntax should pass through
+    output = preprocessor.run(mkdocstrings_input)
+
+    # The mkdocstrings lines should be preserved unchanged
+    assert "::: foo.main.hello" in output
+    assert "::: another.module.function" in output
+
+    # Verify the output structure is preserved
+    assert len([line for line in output if line.startswith(":::")]) == 2

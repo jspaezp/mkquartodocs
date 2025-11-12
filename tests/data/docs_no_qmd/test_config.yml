@@ -1,0 +1,31 @@
+# Test configuration for docs_no_qmd
+# Migrated from legacy expected_output.txt / expected_missing.txt
+
+files_must_exist:
+- ./mkdocs.yml
+- ./docs/index.md
+- ./site/index.html
+- ./site/404.html
+- ./site/img/favicon.ico
+- ./site/img/grid.png
+- ./site/sitemap.xml
+- ./site/sitemap.xml.gz
+files_must_not_exist: []
+snapshots:
+  - site/index.html
+  - "!**/*.css"
+  - "!**/*.js"
+  - "!**/*.gz"
+  - "!**/*.png"
+  - "!**/*.svg"
+  - "!**/*.ico"
+  - "!**/404.html"
+  - "!**/sitemap.xml"
+
+normalize:
+  - pattern: "**/*.html"
+    regex: '<meta name="generator" content="[^"]*">'
+    replace: '<meta name="generator" content="mkdocs">'
+  - pattern: "**/*.html"
+    regex: 'Build Date UTC : [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\+00:00'
+    replace: 'Build Date UTC : NORMALIZED'

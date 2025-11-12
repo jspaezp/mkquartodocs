@@ -1,0 +1,10 @@
+# Test configuration for docs_dirty
+# Migrated from legacy expected_output.txt / expected_missing.txt
+
+files_must_exist:
+- ./docs/page.md
+files_must_not_exist: []
+snapshots:
+  - docs/page.md
+
+normalize: []

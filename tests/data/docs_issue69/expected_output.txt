@@ -1,0 +1,16 @@
+# Input files
+./mkdocs.yml
+./expected_output.txt
+./expected_missing.txt
+./docs
+./docs/index.md
+./docs/example.qmd
+./docs/mkdocstrings_test.qmd
+
+# Site files
+./site/404.html
+./site/index.html
+./site/example/index.html
+./site/mkdocstrings_test/index.html
+./site/sitemap.xml
+./site/sitemap.xml.gz
