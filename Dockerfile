@@ -34,15 +34,17 @@ ARG PYTHON_VERSION
 
 # Install uv (fast Python package installer)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.cargo/bin:${PATH}"
+ENV PATH="/root/.local/bin:${PATH}"
 
 # Install common Python packages used in documentation
 # These rarely change, so we install them in a separate layer
 # Install dependencies
+# Note: We use --python to specify the Python version, and uv will install it if needed
+# We don't use --locked because different Python versions may have different lock requirements
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+    uv sync --python ${PYTHON_VERSION} --no-install-project
 
 # Stage 3: Development image with project dependencies
 FROM python-env AS dev
