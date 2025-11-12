@@ -31,7 +31,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [ '3.10', '3.12' ]
-        quarto-version: [ '1.8.25', '1.9.9' ]
+        quarto-version: [ '1.8.25' ]
+        # quarto-version: [ '1.8.25', '1.9.9' ] 1.9x is a pre-release and breaks everything
         # If editing this, make sure to update the cache key generation step below
         # and the release job's python version if needed
     runs-on: ubuntu-latest
