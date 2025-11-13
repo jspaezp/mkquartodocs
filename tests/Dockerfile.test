@@ -56,14 +56,14 @@ RUN mkdir -p /mkquartodocs
 WORKDIR /mkquartodocs
 
 COPY --chown=quser:quser requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --no-deps
 
 COPY --chown=quser:quser mkquartodocs mkquartodocs
 COPY --chown=quser:quser tests tests
 COPY --chown=quser:quser pyproject.toml pyproject.toml
 COPY --chown=quser:quser README.md README.md
 
-RUN pip install ".[check,check_mkquartodocs]"
+RUN pip install ".[check,check_mkquartodocs]" --no-deps
 
 # To update snapshots, run the container with an overridden command:
 # docker run --rm -t mkquartodocs-test:local pytest tests -vv --update-snapshots
