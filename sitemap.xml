@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://jspaezp.github.io/mkquartodocs/</loc>
+         <lastmod>2025-11-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jspaezp.github.io/mkquartodocs/examples/dataframe_example/</loc>
+         <lastmod>2025-11-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jspaezp.github.io/mkquartodocs/examples/example/</loc>
+         <lastmod>2025-11-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jspaezp.github.io/mkquartodocs/examples/matplotlib_example/</loc>
+         <lastmod>2025-11-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jspaezp.github.io/mkquartodocs/examples/mermaid_example/</loc>
+         <lastmod>2025-11-13</lastmod>
+    </url>
+    <url>
+         <loc>https://jspaezp.github.io/mkquartodocs/examples/mkdocstrings_example/</loc>
+         <lastmod>2025-11-13</lastmod>
+    </url>
+</urlset>
