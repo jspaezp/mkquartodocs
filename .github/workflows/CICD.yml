@@ -27,41 +27,38 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ '3.10', '3.11', '3.12' ]
+        python-version: [ '3.10', '3.13' ]
         os: [ 'ubuntu-latest' ]
     runs-on: ${{ matrix.os }}
     steps:
       # Initial Setup
       - uses: actions/checkout@v5
 
-      # Documentation setup
-      - name: Setup Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-      - name: View Quarto version
-        run: quarto --version
-
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      # Python setup
-      - name: Install uv and set the python version
-        uses: astral-sh/setup-uv@v5
-        with:
-          python-version: ${{ matrix.python-version }}
+      - name: Export requirements
+        run: uv export --format requirements.txt -o requirements.txt --no-emit-workspace --group check --group check_mkdocstrings
 
-      - name: View Python --version
-        run: python --version
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      # CI checks
-      - name: Pytest
-        run: uv run --all-groups python -m pytest -xs --cov . --cov-report=xml
+      - name: Build Docker test image
+        run: |
+          docker build \
+            --platform=linux/amd64 \
+            --build-arg IMAGE=python:${{ matrix.python-version }}-slim \
+            -t mkquartodocs-test:${{ matrix.python-version }} \
+            -f tests/Dockerfile.test \
+            .
+
+      - name: Run tests in Docker
+        run: docker run --rm -t mkquartodocs-test:${{ matrix.python-version }}
 
       - name: mkdocs
-        run: uv run --all-groups python -m mkdocs build --strict
-
-      - uses: codecov/codecov-action@v5
-        with:
-          verbose: true # optional (default = false)
+        run: |
+          docker run --rm -t mkquartodocs-test:${{ matrix.python-version }} \
+            python -m mkdocs build --strict
 
   release:
     # Run when there is a new push on the release branch
@@ -100,7 +97,7 @@ jobs:
 
       - name: Build package
         run: |
-          uv run python -m build
+          docker build -f tests/Dockerfile.test -m build
 
       - name: Publish to PyPI
         env:

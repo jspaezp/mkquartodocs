@@ -32,6 +32,9 @@ check = [
   "mdformat_frontmatter>=2.0.8",
   "build",
 ]
+check_mkdocstrings = [
+  "mkdocstrings[python]>=0.25.2",
+]
 docs = [
   "mkdocs-material>=9.5.49",
   "mkdocs-autorefs>=1.1.0",

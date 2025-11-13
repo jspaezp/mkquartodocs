@@ -25,3 +25,11 @@ normalize:
   - pattern: "**/*.html"
     regex: 'Build Date UTC : [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\+00:00'
     replace: 'Build Date UTC : NORMALIZED'
+  - pattern: "**/*.html"
+    # <p><img alt="" src="../page_files/figure-markdown/mermaid-figure-1.png" />{width="2.13in"
+    # height="2.9in"}</p>
+    regex: '<p><img alt="" src="[^"]+"[ ]*/>{width="[0-9]+(\.[0-9]+)?in"'
+    replace: '<p><img alt="" src="NORMALIZED"{width="NORMALIZED in"'
+  - pattern: "**/*.html"
+    regex: 'height="[0-9]+(\.[0-9]+)?in"}</p>'
+    replace: 'height="NORMALIZED in"</p>'
