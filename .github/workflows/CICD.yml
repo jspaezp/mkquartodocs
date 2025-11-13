@@ -38,7 +38,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Export requirements
-        run: uv export --format requirements.txt -o requirements.txt --no-emit-workspace --group check --group check_mkdocstrings
+        run: uv export --python=${{ matrix.python-version }} --format requirements.txt -o requirements.txt --no-emit-workspace --group check --group check_mkdocstrings
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
