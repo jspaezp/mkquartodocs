@@ -119,17 +119,17 @@ jobs:
             docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
             bash -c "pip install '.[docs]' && python -m mkdocs build --strict"
 
-            uv tool install ghp-import
-            uv tool run ghp-import -n -p -f site
+            uv run --with ghp-import --no-project ghp-import -n -p -f site
 
       - name: Build package
         run: |
-          docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
-            bash -c "pip install build && python -m build"
+          # pip install -U build && python -m build
+          uv run --with build --no-project python -m build
 
       - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPITOKEN }}
         run: |
-            pip install twine && python -m twine upload --non-interactive dist/*
+          # pip install -U twine packaging && python -m twine upload --non-interactive dist/*
+          uv run --with packaging --with twine --no-project twine upload --non-interactive dist/*

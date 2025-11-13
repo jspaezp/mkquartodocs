@@ -58,6 +58,8 @@ WORKDIR /mkquartodocs
 COPY --chown=quser:quser requirements.txt requirements.txt
 RUN pip install -r requirements.txt --no-deps
 
+COPY --chown=quser:quser README.md README.md
+COPY --chown=quser:quser LICENSE LICENSE
 COPY --chown=quser:quser mkquartodocs mkquartodocs
 COPY --chown=quser:quser tests tests
 COPY --chown=quser:quser pyproject.toml pyproject.toml
