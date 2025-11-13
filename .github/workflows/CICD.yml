@@ -118,7 +118,7 @@ jobs:
         run: |
             docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
             bash -c "pip install '.[docs]' && python -m mkdocs build --strict"
-            mkdocs gh-deploy --force
+            uv run --group docs mkdocs gh-deploy --force
 
       - name: Build package
         run: |
