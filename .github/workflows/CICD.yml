@@ -41,12 +41,13 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Export requirements
-        run: uv export \
-          --python=${{ matrix.python-version }} \
-          --format requirements.txt -o requirements.txt \
-          --no-emit-workspace \
-          --group check \
-          --group check_mkdocstrings \
+        run: >
+          uv export
+          --python=${{ matrix.python-version }}
+          --format requirements.txt -o requirements.txt
+          --no-emit-workspace
+          --group check
+          --group check_mkdocstrings
           --group docs
 
       - name: Set up Docker Buildx
@@ -88,12 +89,13 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Export requirements
-        run: uv export \
-          --python=3.13 \
-          --format requirements.txt -o requirements.txt \
-          --no-emit-workspace \
-          --group check \
-          --group check_mkdocstrings \
+        run: >
+          uv export 
+          --python=3.13
+          --format requirements.txt -o requirements.txt
+          --no-emit-workspace
+          --group check
+          --group check_mkdocstrings 
           --group docs
 
       - name: Set up Docker Buildx
