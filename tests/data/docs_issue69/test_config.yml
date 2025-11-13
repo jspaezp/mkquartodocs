@@ -42,3 +42,7 @@ normalize:
   - pattern: "**/*.html"
     regex: 'Build Date UTC : [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\+00:00'
     replace: 'Build Date UTC : NORMALIZED'
+  - pattern: "**/*.html"
+    regex: '<pre><code>/.*/ipykernel_[0-9]+/[0-9]+\.py:[0-9]+: UserWarning: This is a warning'
+    replace: '<pre><code>/.*/ipykernel_XXXXX/1292902873.py:4: UserWarning: This is a warning'
+      # <pre><code>/var/folders/42/tyvw22cj7t35kbjs0frhf_vw0000gp/T/ipykernel_XXXXX/1292902873.py:4: UserWarning: This is a warning

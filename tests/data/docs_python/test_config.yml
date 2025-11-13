@@ -31,5 +31,10 @@ normalize:
     regex: 'Build Date UTC : [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\+00:00'
     replace: 'Build Date UTC : NORMALIZED'
   - pattern: "**/*.html"
-    regex: '/ipykernel_\d+/'
-    replace: '/ipykernel_XXXXX/'
+    regex: '/.*/ipykernel_\d+/'
+    replace: '/SOMEWHERE/ipykernel_XXXXX/'
+  # Strip all ANSI escape codes from error tracebacks
+  # This handles differences between Python 3.10 ([0;31m) and newer versions ([31m)
+  - pattern: "**/*.html"
+    regex: '\x1b\[[0-9;]*m'
+    replace: 'ANSICODESTRIPPED'

@@ -1633,7 +1633,7 @@ wheels = [
 
 [[package]]
 name = "mkquartodocs"
-version = "0.6.0"
+version = "0.7.0"
 source = { editable = "." }
 dependencies = [
     { name = "mkdocs" },
@@ -1654,6 +1654,9 @@ check = [
     { name = "pytest-datadir" },
     { name = "pyyaml" },
     { name = "syrupy" },
+]
+check-mkdocstrings = [
+    { name = "mkdocstrings", extra = ["python"] },
 ]
 docs = [
     { name = "matplotlib" },
@@ -1689,6 +1692,7 @@ check = [
     { name = "pyyaml", specifier = ">=6.0.0" },
     { name = "syrupy", specifier = ">=4.0.0" },
 ]
+check-mkdocstrings = [{ name = "mkdocstrings", extras = ["python"], specifier = ">=0.25.2" }]
 docs = [
     { name = "matplotlib" },
     { name = "mkdocs-autorefs", specifier = ">=1.1.0" },
