@@ -116,8 +116,9 @@ jobs:
       # Publishing Docs
       - name: Deploy Docs
         run: |
-          docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
-            bash -c "pip install '.[docs]' && python -m mkdocs gh-deploy --strict --force"
+            docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
+            bash -c "pip install '.[docs]' && python -m mkdocs build --strict"
+            mkdocs gh-deploy --force
 
       - name: Build package
         run: |
