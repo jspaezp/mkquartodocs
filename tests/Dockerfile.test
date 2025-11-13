@@ -68,4 +68,3 @@ RUN pip install ".[check,check_mkquartodocs]"
 # To update snapshots, run the container with an overridden command:
 # docker run --rm -t mkquartodocs-test:local pytest tests -vv --update-snapshots
 CMD ["pytest", "tests", "-vv"]
-
