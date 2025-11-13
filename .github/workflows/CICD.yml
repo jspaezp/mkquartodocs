@@ -132,5 +132,4 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPITOKEN }}
         run: |
-          docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
-            bash -c "pip install twine && python -m twine upload --non-interactive dist/*"
+            pip install twine && python -m twine upload --non-interactive dist/*
