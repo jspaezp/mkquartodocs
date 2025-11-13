@@ -41,7 +41,13 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Export requirements
-        run: uv export --python=${{ matrix.python-version }} --format requirements.txt -o requirements.txt --no-emit-workspace --group check --group check_mkdocstrings
+        run: uv export \
+          --python=${{ matrix.python-version }} \
+          --format requirements.txt -o requirements.txt \
+          --no-emit-workspace \
+          --group check \
+          --group check_mkdocstrings \
+          --group docs
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -65,7 +71,7 @@ jobs:
         run: |
           # We beed to mount the whole repo ... so we make a volume from . to /mkquartodocs
           docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-test:${{ matrix.python-version }} \
-            python -m mkdocs build --strict
+            bash -c "pip install '.[docs]' && python -m mkdocs build --strict"
 
   release:
     # Run when there is a new push on the release branch
@@ -78,37 +84,48 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
 
-      # Documentation setup
-      - name: Setup Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-      - name: View Quarto version
-        run: quarto --version
-
-      # Python setup
-      - name: Install uv and set the python version
+      - name: Install uv
         uses: astral-sh/setup-uv@v5
+
+      - name: Export requirements
+        run: uv export \
+          --python=3.13 \
+          --format requirements.txt -o requirements.txt \
+          --no-emit-workspace \
+          --group check \
+          --group check_mkdocstrings \
+          --group docs
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker release image
+        uses: docker/build-push-action@v6
         with:
-          python-version: '3.12'
-
-      - name: View Python --version
-        run: uv run python --version
-
-      - name: Build package
-        run: |
-          uv run --all-groups python -m build
+          context: .
+          file: tests/Dockerfile.test
+          platforms: linux/amd64
+          build-args: IMAGE=python:3.13-slim
+          tags: mkquartodocs-release:latest
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       # Publishing Docs
       - name: Deploy Docs
         run: |
-          uv run python -m mkdocs gh-deploy --strict --force
+          docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
+            bash -c "pip install '.[docs]' && python -m mkdocs gh-deploy --strict --force"
 
       - name: Build package
         run: |
-          docker build -f tests/Dockerfile.test -m build
+          docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
+            bash -c "pip install build && python -m build"
 
       - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPITOKEN }}
         run: |
-          python -m twine upload --non-interactive dist/*
+          docker run --rm -v ${PWD}:/mkquartodocs -t mkquartodocs-release:latest \
+            bash -c "pip install twine && python -m twine upload --non-interactive dist/*"
