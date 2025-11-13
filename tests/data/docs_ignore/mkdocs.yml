@@ -1,4 +1,4 @@
 site_name: Test1
 plugins:
   - mkquartodocs:
-      ignore: (.*broken.*.qmd)|(.*page[0-9].qmd)
+      ignore_pattern: (.*broken.*.qmd)|(.*page[0-9].qmd)

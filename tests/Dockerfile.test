@@ -1,0 +1,71 @@
+ARG IMAGE=python:3.13-slim
+FROM $IMAGE
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    unzip \
+    bash \
+    build-essential \
+    libffi-dev \
+    libssl-dev \
+    pkg-config \
+    cmake \
+    gcc \
+    python3-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    nodejs \
+    npm \
+    chromium \
+    groff \
+    less \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
+
+RUN npm install -g deno
+RUN npm install -g @mermaid-js/mermaid-cli
+
+# Create a wrapper script for chromium with Docker-safe flags
+RUN echo '#!/bin/bash\nexec /usr/bin/chromium --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu "$@"' > /usr/local/bin/chromium-wrapper && \
+    chmod +x /usr/local/bin/chromium-wrapper
+ENV QUARTO_CHROMIUM=/usr/local/bin/chromium-wrapper
+
+ARG QUARTO_VERSION=1.8.26
+# ARG QUARTO_ARCH=linux-amd64
+ARG QUARTO_ARCH=linux-amd64
+ENV QUARTO_VERSION=$QUARTO_VERSION
+ENV QUARTO_ARCH=$QUARTO_ARCH
+
+# Install quarto cli
+RUN mkdir -p /opt/quarto/${QUARTO_VERSION}
+RUN curl -o quarto.tar.gz -L \
+    "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-${QUARTO_ARCH}.tar.gz"
+    # https://github.com/quarto-dev/quarto-cli/releases/download/v1.8.26/quarto-1.8.26-linux-amd64.tar.gz
+RUN tar -zxvf quarto.tar.gz \
+    -C "/opt/quarto/${QUARTO_VERSION}" \
+    --strip-components=1
+
+RUN ls -l "/opt/quarto/${QUARTO_VERSION}/bin/tools"
+RUN ln -s "/opt/quarto/${QUARTO_VERSION}/bin/quarto" /usr/local/bin/quarto
+RUN rm quarto.tar.gz
+RUN quarto install tinytex
+RUN /usr/local/bin/quarto check
+
+RUN mkdir -p /mkquartodocs
+WORKDIR /mkquartodocs
+
+COPY --chown=quser:quser requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+COPY --chown=quser:quser mkquartodocs mkquartodocs
+COPY --chown=quser:quser tests tests
+COPY --chown=quser:quser pyproject.toml pyproject.toml
+COPY --chown=quser:quser README.md README.md
+
+RUN pip install ".[check,check_mkquartodocs]"
+
+# To update snapshots, run the container with an overridden command:
+# docker run --rm -t mkquartodocs-test:local pytest tests -vv --update-snapshots
+CMD ["pytest", "tests", "-vv"]
+
