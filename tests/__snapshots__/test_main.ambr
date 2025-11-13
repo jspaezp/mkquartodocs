@@ -1809,7 +1809,7 @@
       </details>
       <details class="warning" open="open">
       <summary>stderr</summary>
-      <pre><code>/var/folders/42/tyvw22cj7t35kbjs0frhf_vw0000gp/T/ipykernel_XXXXX/1292902873.py:4: UserWarning: This is a warning
+      <pre><code>/SOMEWHERE/ipykernel_XXXXX/1292902873.py:4: UserWarning: This is a warning
         warnings.warn("This is a warning")
       </code></pre>
       </details>
@@ -1819,12 +1819,12 @@
       <details class="danger" open="open">
       <summary>error</summary>
       <pre><code>NotImplementedError: This is an error
-      [31m---------------------------------------------------------------------------[39m
-      [31mNotImplementedError[39m                       Traceback (most recent call last)
-      [36mCell[39m[36m [39m[32mIn[2][39m[32m, line 1[39m
-      [32m----&gt; [39m[32m1[39m [38;5;28;01mraise[39;00m [38;5;167;01mNotImplementedError[39;00m([33m"[39m[33mThis is an error[39m[33m"[39m)
+      ANSICODESTRIPPED---------------------------------------------------------------------------ANSICODESTRIPPED
+      ANSICODESTRIPPEDNotImplementedErrorANSICODESTRIPPED                       Traceback (most recent call last)
+      ANSICODESTRIPPEDCellANSICODESTRIPPEDANSICODESTRIPPED ANSICODESTRIPPEDANSICODESTRIPPEDIn[2]ANSICODESTRIPPEDANSICODESTRIPPED, line 1ANSICODESTRIPPED
+      ANSICODESTRIPPED----&gt; ANSICODESTRIPPEDANSICODESTRIPPED1ANSICODESTRIPPED ANSICODESTRIPPEDraiseANSICODESTRIPPED ANSICODESTRIPPEDNotImplementedErrorANSICODESTRIPPED(ANSICODESTRIPPED"ANSICODESTRIPPEDANSICODESTRIPPEDThis is an errorANSICODESTRIPPEDANSICODESTRIPPED"ANSICODESTRIPPED)
       
-      [31mNotImplementedError[39m: This is an error
+      ANSICODESTRIPPEDNotImplementedErrorANSICODESTRIPPED: This is an error
       </code></pre>
       </details></div>
                   </div>
