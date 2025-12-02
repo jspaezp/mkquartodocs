@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
 
       - name: Black
         run: uv run --group lint python -m black . --check --diff
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
 
       - name: Export requirements
         run: >
@@ -86,7 +86,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
 
       - name: Export requirements
         run: >
