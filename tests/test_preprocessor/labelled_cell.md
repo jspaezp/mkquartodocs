@@ -1,0 +1,55 @@
+---
+biblio-config: true
+jupyter: python3
+labels:
+  abstract: Abstract
+  affiliations: Affiliations
+  authors: Authors
+  description: Description
+  doi: Doi
+  keywords: Keywords
+  modified: Modified
+  published: Published
+  related_formats: Other Formats
+title: labelled
+toc-title: Table of contents
+---
+
+For a demonstration, see [here](#example-table).
+
+:::: {.cell execution_count="1"}
+``` {.python .cell-code}
+import pandas as pd
+
+df = pd.DataFrame({
+    "a": [1, 2, 3],
+    "b": [100, 200, 300],
+})
+df
+```
+
+::: {#example-table .cell-output .cell-output-display execution_count="1"}
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+|     | a   | b   |
+|-----|-----|-----|
+| 0   | 1   | 100 |
+| 1   | 2   | 200 |
+| 2   | 3   | 300 |
+
+</div>
+:::
+::::
