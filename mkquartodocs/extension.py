@@ -152,7 +152,7 @@ class BlockContext:
         assert all(w == ":" for w in grp[0]), f"{grp[0]} should be :"
         first_cell_grp = 1
         label = None
-        if len(grp) > 1 and grp [1] and grp[1].startswith("#"):
+        if len(grp) > 1 and grp[1] and grp[1].startswith("#"):
             label = grp[1][1:]
             first_cell_grp = 2
         return BlockContext(
@@ -171,7 +171,7 @@ class BlockContext:
         grp = sr.groups()
         first_cell_grp = 1
         label = None
-        if len(grp) > 1 and grp [1] and grp[1].startswith("#"):
+        if len(grp) > 1 and grp[1] and grp[1].startswith("#"):
             label = grp[1][1:]
             first_cell_grp = 2
         return BlockContext(
@@ -372,8 +372,6 @@ class BlockContext:
             # markdown in html attribute and leave as is.
             non_empty = [line for line in internal if line.strip()]
             if internal[0].startswith("<div>") and non_empty[-1].endswith("</div>"):
-                print("FOO")
-                print(self.label)
                 if "style" in internal[1]:
                     if self.label:
                         internal[0] = f'<div markdown="block" id="{self.label}">'
