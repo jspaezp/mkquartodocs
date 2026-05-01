@@ -17,7 +17,7 @@ dependencies = [
 "mkquartodocs" = "mkquartodocs.plugin:MkQuartoDocsPlugin"
 
 [dependency-groups]
-lint = ["black>=24.10.0", "pylint>=2.16.2", "ruff>=0.8.4"]
+lint = ["black>=24.10.0", "pylint>=4.0.5", "ruff>=0.8.4"]
 check = [
   "jupyter>=1.0.0",
   "pytest-datadir>=1.3.1",
